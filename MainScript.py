@@ -1,4 +1,5 @@
 import tkinter as tk
+from PIL import Image, ImageTk
 
 def slider_moved(slider_index, value):
     global sliders, total_label
@@ -19,9 +20,24 @@ def slider_moved(slider_index, value):
 root = tk.Tk()
 root.title("ParSuit")  # Main title
 
-# Subtitle label
-subtitle_label = tk.Label(root, text="Suitability Analysis for the Hartford Capitol Region")
+# Subtitle label with styling
+subtitle_label = tk.Label(root, text="Suitability Analysis for the Hartford Capitol Region",
+                          font=("Arial", 18, "bold")) 
 subtitle_label.pack()
+
+# Load the image (we'll resize later)
+image = Image.open(r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit\CRCOG.jpg")
+
+# Resize the image
+resized_image = image.resize((650, 500), Image.ANTIALIAS)  # Adjust width and height as desired
+
+# Convert to PhotoImage
+photo = ImageTk.PhotoImage(resized_image)
+
+# Create the label with the resized image
+image_label = tk.Label(root, image=photo)
+image_label.pack()
+
 
 sliders = []
 for i in range(8):
