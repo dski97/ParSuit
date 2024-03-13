@@ -17,7 +17,11 @@ def slider_moved(slider_index, value):
         total_label.config(text=f"Total: {current_total + value}/100")
 
 root = tk.Tk()
-root.title("Sliders Total Control")
+root.title("ParSuit")  # Main title
+
+# Subtitle label
+subtitle_label = tk.Label(root, text="Suitability Analysis for the Hartford Capitol Region")
+subtitle_label.pack()
 
 sliders = []
 for i in range(8):
