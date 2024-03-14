@@ -121,6 +121,9 @@ class ParSuitApp:
         more_important_label = tk.Label(importance_frame, text="More Important", anchor='e', font=bold_font)
         more_important_label.pack(side='left', fill='x', expand=True)
 
+        # Define a fixed width for labels to ensure sliders align
+        label_width = 20  # Adjust this value as needed
+
         #List of slider names
         slider_names = [
             'Away from Brownfields',
@@ -138,15 +141,16 @@ class ParSuitApp:
 
         for name in slider_names:
             frame = tk.Frame(self.scrollable_frame)
-            frame.pack(fill='x', pady=2, expand=True)
+            frame.pack(fill='x', pady=2, expand=False)
 
-            # Label for the criteria
-            label = tk.Label(frame, text=name, anchor='w')
-            label.pack(side='left', padx=(0, 10))
+            # Label for the criteria with a fixed width
+            label = tk.Label(frame, text=name, anchor='w', width=label_width)
+            label.pack(side='left')
 
-            # Slider
-            slider = tk.Scale(frame, from_=0, to=100, orient='horizontal')
-            slider.pack(side='left', fill='x', expand=True)
+            # Slider with a fixed length
+            slider_length = 500  # Adjust this value as needed to fit your layout
+            slider = tk.Scale(frame, from_=0, to=100, orient='horizontal', length=slider_length)
+            slider.pack(side='left', fill='x', padx=(0, 10))
 
             self.sliders.append(slider)
 
