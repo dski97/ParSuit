@@ -43,6 +43,7 @@ class ParSuitApp:
         container.grid_columnconfigure(0, weight=1)
 
         self.load_and_display_image()
+        self.create_info_text()
         self.create_sliders()
 
         self.total_label = tk.Label(self.root, text="Total: 0/100")
@@ -66,6 +67,42 @@ class ParSuitApp:
         self.image_label = tk.Label(self.scrollable_frame, image=photo)
         self.image_label.image = photo  # Keep a reference to avoid garbage collection
         self.image_label.pack(pady=20)
+
+    def create_info_text(self):
+        # Define a font for the heading
+        heading_font = Font(family="Helvetica", size=14, weight="bold")
+
+        # Create a heading label with the custom font
+        heading_label = tk.Label(self.scrollable_frame, text="Geographic Analysis", font=heading_font)
+        heading_label.pack(pady=(10, 2))  # Adjust vertical padding as needed
+
+        # Create a paragraph label. No custom font needed, but you can customize if desired
+        paragraph_text = "This analysis explores various geographic and environmental factors influencing the Hartford Capitol Region. It provides insights into land use, demographics, and infrastructure, assisting in strategic planning and decision-making."
+        paragraph_label = tk.Label(self.scrollable_frame, text=paragraph_text, wraplength=600, justify="center")
+        paragraph_label.pack(pady=(0, 20))  # Adjust vertical padding as needed
+
+          # Add a label for the combobox
+        preset_label = tk.Label(self.scrollable_frame, text="Adjust the criteria based on your needs or select custom presets made for certain scenarios")
+        preset_label.pack(pady=(10, 2))  # Adjust vertical padding as needed
+
+        # Create a Combobox for custom presets
+        self.preset_combobox = ttk.Combobox(self.scrollable_frame, 
+                                            values=["Balanced", "Urban-Intensified", "Rural Favorite", "Community-Based", "Lone Star Ranger"],
+                                            state="readonly")  # state="readonly" to prevent user typing
+        self.preset_combobox.set("Custom Presets")  # Placeholder text
+        self.preset_combobox.pack(pady=(0, 20))
+
+        # Bind the selection event to a method if needed
+        self.preset_combobox.bind("<<ComboboxSelected>>", self.on_preset_selected)
+
+    def on_preset_selected(self, event):
+        selected_preset = self.preset_combobox.get()
+        # Update sliders or perform other actions based on the selected preset
+        # For example:
+        if selected_preset == "Balanced":
+            # Set sliders to balanced positions
+            pass
+        # Handle other presets similarly...
 
     def create_sliders(self):
         for i in range(8):  # Assuming you have 8 sliders
