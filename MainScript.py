@@ -139,20 +139,28 @@ class ParSuitApp:
             'Appropriate Land Use'
         ]
 
-        for name in slider_names:
+        for index, name in enumerate(slider_names):
             frame = tk.Frame(self.scrollable_frame)
             frame.pack(fill='x', pady=2, expand=False)
-
-            # Label for the criteria with a fixed width
-            label = tk.Label(frame, text=name, anchor='w', width=label_width)
+            label = tk.Label(frame, text=name, anchor='w')
             label.pack(side='left')
-
-            # Slider with a fixed length
-            slider_length = 500  # Adjust this value as needed to fit your layout
-            slider = tk.Scale(frame, from_=0, to=100, orient='horizontal', length=slider_length)
+            # Modified slider creation to include command binding
+            slider = tk.Scale(frame, from_=0, to=100, orient='horizontal', length=500, command=lambda value, index=index: self.update_total(index, value))
             slider.pack(side='left', fill='x', padx=(0, 10))
-
             self.sliders.append(slider)
+
+    def update_total(self, moved_index, value):
+        total = sum(slider.get() for i, slider in enumerate(self.sliders) if i != moved_index)
+        moved_value = int(value)
+        if total + moved_value > 100:
+            excess = total + moved_value - 100
+            new_value = moved_value - excess
+            self.sliders[moved_index].set(new_value)
+            total = 100  # Ensure total does not exceed 100
+        else:
+            total += moved_value
+            
+        self.total_label.config(text=f"Total: {total}/100")
 
     def slider_moved(self, slider_index, value):
         value = int(value)
