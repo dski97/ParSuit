@@ -21,9 +21,11 @@ class ParSuitApp:
         self.root.title("ParSuit")
         self.sliders = []
         self.setup_ui()
+        self.center_window()
 
     def setup_ui(self):
-        self.root.geometry("650x700")
+        self.root.geometry("800x800")
+        self.root.resizable(False, False)
         self.create_title()
         self.create_main_container()
         self.load_and_display_image()
@@ -163,6 +165,16 @@ class ParSuitApp:
         frame_width = self.scrollable_frame.winfo_reqwidth()
         new_x_position = max((canvas_width - frame_width) / 2, 0)
         self.canvas.coords(self.scrollable_frame_window_id, new_x_position, 0)
+    
+    def center_window(self):
+        self.root.update_idletasks()  # Update "requested size" from geometry manager
+        width = self.root.winfo_width()  # Get the actual width of the window
+        height = self.root.winfo_height()  # Get the actual height of the window
+        screen_width = self.root.winfo_screenwidth()
+        screen_height = self.root.winfo_screenheight()
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+        self.root.geometry(f'+{x}+{y}')
 
 if __name__ == "__main__":
     root = tk.Tk()
