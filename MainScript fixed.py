@@ -34,6 +34,10 @@ class ParSuitApp:
         self.create_sliders()
         self.create_total_label()
         self.create_glossary()
+        self.update_scroll()
+
+        self.root.bind_all("<MouseWheel>", self.on_mousewheel)
+
         self.root.bind("<Configure>", self.on_window_resize)
 
     def create_title(self):
@@ -175,6 +179,14 @@ class ParSuitApp:
         x = (screen_width // 2) - (width // 2)
         y = (screen_height // 2) - (height // 2)
         self.root.geometry(f'+{x}+{y}')
+    
+    def update_scroll(self):
+        self.root.update_idletasks()  # Force update of the geometry
+        self.canvas.configure(scrollregion=self.canvas.bbox("all"))  # Update the scrollregion to encompass the scrollable_frame
+
+    def on_mousewheel(self, event):
+        # For Windows and Linux
+        self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
 
 if __name__ == "__main__":
     root = tk.Tk()
