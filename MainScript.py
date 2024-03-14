@@ -105,13 +105,49 @@ class ParSuitApp:
         # Handle other presets similarly...
 
     def create_sliders(self):
-        for i in range(8):  # Assuming you have 8 sliders
+
+        # Define the bold font
+        bold_font = Font(family="Helvetica", size=10, weight="bold")
+
+        # Create a frame for the importance labels
+        importance_frame = tk.Frame(self.scrollable_frame)
+        importance_frame.pack(fill='x', pady=(0, 2))
+
+        # Label for "Less Important" on the left with bold font
+        less_important_label = tk.Label(importance_frame, text="Less Important", anchor='w', font=bold_font)
+        less_important_label.pack(side='left', fill='x', expand=True)
+
+        # Label for "More Important" on the right with bold font
+        more_important_label = tk.Label(importance_frame, text="More Important", anchor='e', font=bold_font)
+        more_important_label.pack(side='left', fill='x', expand=True)
+
+        #List of slider names
+        slider_names = [
+            'Away from Brownfields',
+            'Buildable Soil',
+            'Away from Floodzones',
+            'Proximity to Hospitals',
+            'Proximity to Police Stations',
+            'Proximity to Roads',
+            'Proximity to Schools',
+            'Public Sewer',
+            'Low Grade Slope',
+            'Away from Wetlands',
+            'Appropriate Land Use'
+        ]
+
+        for name in slider_names:
             frame = tk.Frame(self.scrollable_frame)
-            frame.pack(fill='x', pady=2)
-            label = tk.Label(frame, text=f"Slider {i + 1}")
+            frame.pack(fill='x', pady=2, expand=True)
+
+            # Label for the criteria
+            label = tk.Label(frame, text=name, anchor='w')
             label.pack(side='left', padx=(0, 10))
-            slider = tk.Scale(frame, from_=0, to=100, orient='horizontal', command=lambda value, i=i: self.slider_moved(i, value))
+
+            # Slider
+            slider = tk.Scale(frame, from_=0, to=100, orient='horizontal')
             slider.pack(side='left', fill='x', expand=True)
+
             self.sliders.append(slider)
 
     def slider_moved(self, slider_index, value):
