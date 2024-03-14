@@ -31,6 +31,7 @@ class ParSuitApp:
         self.create_importance_key()
         self.create_sliders()
         self.create_total_label()
+        self.create_glossary()
         self.root.bind("<Configure>", self.on_window_resize)
 
     def create_title(self):
@@ -123,6 +124,29 @@ class ParSuitApp:
         total_label_font = Font(family="Times New Roman", size=16, weight="bold")  # Using Times New Roman for a change
         self.total_label = tk.Label(self.root, text="Total: 0/100", font=total_label_font)
         self.total_label.pack(side='bottom')
+
+    def create_glossary(self):
+        glossary_frame = tk.Frame(self.scrollable_frame)
+        glossary_frame.pack(fill='x', pady=20)
+
+        glossary_title_font = Font(family="Arial", size=14, weight="bold")
+        glossary_title = tk.Label(glossary_frame, text="Glossary", font=glossary_title_font)
+        glossary_title.pack(side='top')
+
+        # You can use a dictionary to store your terms and their explanations
+        glossary_terms = {
+            'Low Grade Slope': 'Indicates the degree to which the land is inclined, affecting construction and drainage.',
+            'Favorable Soil': 'Refers to soil with properties conducive to agriculture or construction.',
+            'Away from Flood Zones': 'Areas less likely to experience flooding, reducing risk of water damage.',
+            # ... add all other terms and their explanations here
+        }
+
+        for term, explanation in glossary_terms.items():
+            term_label = tk.Label(glossary_frame, text=f"{term} -", anchor='w', justify='left')
+            term_label.pack(fill='x', padx=20)
+
+            explanation_label = tk.Label(glossary_frame, text=explanation, anchor='w', justify='left')
+            explanation_label.pack(fill='x', padx=40)
 
     def on_window_resize(self, event=None):
         canvas_width = self.canvas.winfo_width()
