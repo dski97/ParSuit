@@ -133,16 +133,26 @@ class ParSuitApp:
         glossary_title = tk.Label(glossary_frame, text="Glossary", font=glossary_title_font)
         glossary_title.pack(side='top')
 
+        # Font for glossary terms (bold and italic)
+        term_font = Font(family="Arial", size=12, weight="bold", slant="italic")
+
         # You can use a dictionary to store your terms and their explanations
         glossary_terms = {
-            'Low Grade Slope': 'Indicates the degree to which the land is inclined, affecting construction and drainage.',
-            'Favorable Soil': 'Refers to soil with properties conducive to agriculture or construction.',
+            'Away from Brownfields': 'Indicates the degree to which the land is inclined, affecting construction and drainage.',
+            'Buildable Soil': 'Refers to soil with properties conducive to agriculture or construction.',
             'Away from Flood Zones': 'Areas less likely to experience flooding, reducing risk of water damage.',
-            # ... add all other terms and their explanations here
+            'Proximity to Hospitals': 'Distance from medical facilities, affecting emergency response times.',
+            'Proximity to Police Stations': 'Distance from law enforcement, affecting crime rates and safety.',
+            'Proximity to Roads': 'Distance from roads, affecting accessibility and noise pollution.',
+            'Proximity to Schools': 'Distance from educational institutions, affecting property values and child safety.',
+            'Public Sewer': 'Availability of immediate access to public sewer systems.',
+            'Low Grade Slope': 'Indicates the degree to which the land is flat and suitable for construction.',
+            'Away from Wetlands': 'Distance from wetlands, affecting environmental impact and land use.',
+            'Appropriate Land Use': 'Refers to the suitability of the land for specific purposes such as residential, commercial, or industrial.'
         }
 
         for term, explanation in glossary_terms.items():
-            term_label = tk.Label(glossary_frame, text=f"{term} -", anchor='w', justify='left')
+            term_label = tk.Label(glossary_frame, text=f"{term} -", font=term_font, anchor='w', justify='left')
             term_label.pack(fill='x', padx=20)
 
             explanation_label = tk.Label(glossary_frame, text=explanation, anchor='w', justify='left')
