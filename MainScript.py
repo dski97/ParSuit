@@ -1,5 +1,6 @@
 import tkinter as tk
 from tkinter import ttk
+from tkinter.font import Font  # Import for font customization
 from PIL import Image, ImageTk
 
 class ParSuitApp:
@@ -11,6 +12,13 @@ class ParSuitApp:
     
     def setup_ui(self):
         self.root.geometry("650x700")  # Set initial size
+        
+        # Define a bold font for the title
+        title_font = Font(family="Helvetica", size=16, weight="bold")
+        
+        # Create a title label with the bold font
+        title_label = tk.Label(self.root, text="Suitability Analysis for Hartford Capitol Region", font=title_font)
+        title_label.pack(side='top', pady=(10, 20))  # Adjust padding as needed
         
         container = ttk.Frame(self.root)
         container.pack(side='top', fill='both', expand=True)
@@ -24,7 +32,6 @@ class ParSuitApp:
             lambda e: self.canvas.configure(scrollregion=self.canvas.bbox("all"))
         )
 
-        # Save the window ID for later reference
         self.scrollable_frame_window_id = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor='nw')
 
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
@@ -41,7 +48,6 @@ class ParSuitApp:
         self.total_label = tk.Label(self.root, text="Total: 0/100")
         self.total_label.pack(side='bottom')
 
-        # Bind the resize event to dynamically adjust the scrollable frame position
         self.root.bind("<Configure>", self.on_window_resize)
 
     def on_window_resize(self, event=None):
