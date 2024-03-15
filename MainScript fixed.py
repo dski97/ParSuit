@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk
 from tkinter.font import Font
 from PIL import Image, ImageTk
+import threading
 
 class Configuration:
     SLIDER_NAMES = [
@@ -35,6 +36,7 @@ class ParSuitApp:
         self.create_total_label()
         self.create_glossary()
         self.update_scroll()
+        self.create_processing_button()
 
         self.root.bind_all("<MouseWheel>", self.on_mousewheel)
 
@@ -187,6 +189,58 @@ class ParSuitApp:
     def on_mousewheel(self, event):
         # For Windows and Linux
         self.canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+
+    def create_processing_button(self):
+         # Create a frame to hold the button and give it some vertical padding
+        button_frame = tk.Frame(self.scrollable_frame)
+        button_frame.pack(fill='x', pady=20)
+
+        # Create the button with a decent size, make it green, and attach it to the frame
+        self.process_button = tk.Button(button_frame, text="Process Weighted Overlay", 
+                                        command=self.process_weighted_overlay,
+                                        bg='green', fg='white', # Set the background to green and text to white
+                                        font=Font(family="Arial", size=12, weight="bold"))
+        self.process_button.pack(pady=10, padx=20, ipadx=20, ipady=10)  # Increase internal padding to make the button bigger
+
+    def process_weighted_overlay(self):
+        # Open a new Toplevel window
+        self.processing_window = tk.Toplevel(self.root)
+        self.processing_window.title("Processing")
+        self.processing_window.geometry("400x150")  # Adjust size as needed
+
+        # Add a message
+        processing_message = tk.Label(self.processing_window, text="Script working... please be patient!")
+        processing_message.pack(pady=10)
+
+        # Create a frame with a red background to act as the border
+        button_frame = tk.Frame(self.processing_window, background='red', bd=1, relief='solid', padx=1, pady=1)
+        button_frame.pack(pady=20)
+
+        self.ok_button = tk.Button(self.processing_window, text="OK", state='disabled',
+                                command=self.processing_window.destroy,
+                                padx=16, pady=7,  # Increase padding to give more space around the text
+                                font=('Helvetica', 14, 'bold'),  # Increase font size as needed
+                                bg='red',  # Set the background color to red
+                                fg='white',  # Set the text color to white for better contrast
+                                activebackground='dark red',  # Optional: Change background when clicked
+                                activeforeground='white',  # Optional: Change text color when clicked
+                                relief='raised',  # Optional: Change the relief of the button to give it depth
+                                borderwidth=2)  # Optional: Set the border width if you want a border
+        self.ok_button.pack(ipadx=6, ipady=3)  # Increase internal padding for a larger button appearance
+
+
+        # Start a thread for the weighted overlay process
+        threading.Thread(target=self.run_weighted_overlay).start()
+
+    def run_weighted_overlay(self):
+        # Simulate a long-running task
+        # Replace this with your actual function to perform the weighted overlay
+        # time.sleep(5) or any long-running task
+
+        # After completing the task, enable the OK button
+        # This has to be done in a thread-safe manner since it updates the GUI
+        self.ok_button.config(state='normal')
+
 
 if __name__ == "__main__":
     root = tk.Tk()
