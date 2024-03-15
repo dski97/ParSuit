@@ -12,7 +12,7 @@ class Configuration:
     ]
     IMAGE_PATH = r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit\CRCOG.jpg"
     TITLE_TEXT = "Suitability Analysis for Hartford Capitol Region"
-    GEOGRAPHIC_ANALYSIS_TEXT = """This analysis explores various geographic and environmental factors influencing the Hartford Capitol Region. It provides insights into land use, demographics, and infrastructure, assisting in strategic planning and decision-making."""
+    GEOGRAPHIC_ANALYSIS_TEXT = "Explore the Hartford Capitol Region with ParSuit, your guide to informed land suitability analysis. This tool empowers you to prioritize geographic and environmental factors with simple slider adjustments. From safeguarding against environmental risks to enhancing access to essential services, your input directly shapes the analysis. Once you've set your preferences, a single click reveals a comprehensive map, visualizing the most suitable parcels according to your criteria. ParSuit combines precision with simplicity, offering a clear path to insightful, actionable data for your projects.'"
     PRESETS = ["Balanced", "Urban-Intensified", "Rural Favorite", "Community-Based", "Lone Star Ranger"]
 
 class ParSuitApp:
@@ -70,7 +70,7 @@ class ParSuitApp:
 
     def create_info_text(self):
         heading_font = Font(family="Helvetica", size=14, weight="bold")
-        tk.Label(self.scrollable_frame, text="Geographic Analysis", font=heading_font).pack(pady=(10, 2))
+        tk.Label(self.scrollable_frame, text="Welcome to the ParSuit Application!", font=heading_font).pack(pady=(10, 2))
         tk.Label(self.scrollable_frame, text=Configuration.GEOGRAPHIC_ANALYSIS_TEXT, wraplength=600, justify="center").pack(pady=(0, 20))
         self.create_presets_combobox()
 
