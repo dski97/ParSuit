@@ -125,8 +125,19 @@ class ParSuitApp:
 
     def on_preset_selected(self, event):
         selected_preset = self.preset_combobox.get()
-        # Implementation for handling preset selection.
-        pass
+        self.apply_preset_values(selected_preset)
+
+    def apply_preset_values(self, preset):
+        preset_values = {
+            "Balanced": [9]*10 + [10],
+            "Urban-Intensified": [3, 3, 3, 14, 14, 14, 8, 14, 3, 3, 21],
+            "Rural Favorite": [14, 14, 14, 3, 3, 3, 9, 3, 14, 14, 9],
+            "Community-Based": [3, 9, 3, 16, 16, 11, 16, 9, 3, 2, 12],
+            "Lone Star Ranger": [16, 12, 16, 3, 3, 3, 3, 3, 12, 16, 13]
+        }
+        selected_values = preset_values.get(preset, [0]*len(Configuration.SLIDER_NAMES))
+        for slider, value in zip(self.sliders, selected_values):
+            slider.set(value)
 
     def create_total_label(self):
         total_label_font = Font(family="Times New Roman", size=16, weight="bold")  # Using Times New Roman for a change
@@ -240,6 +251,8 @@ class ParSuitApp:
         # After completing the task, enable the OK button
         # This has to be done in a thread-safe manner since it updates the GUI
         self.ok_button.config(state='normal')
+
+    
 
 
 if __name__ == "__main__":
