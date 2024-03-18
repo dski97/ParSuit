@@ -11,8 +11,9 @@
 </head>
 <body>
     <div id="map"></div>
-
-    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/georaster"></script>
+    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
     <script>
         var map = L.map('map').setView([41.5965, -72.8782], 13); /* Set the center to Southington, Connecticut */
 
@@ -22,6 +23,35 @@
         }).addTo(map);
 
         // Remove the marker
+        var url_to_geotiff_file = "https://geotiff.github.io/georaster-layer-for-leaflet-example/example_4326.tif";
+
+        fetch(url_to_geotiff_file)
+        .then(response => response.arrayBuffer())
+        .then(arrayBuffer => {
+            parseGeoraster(arrayBuffer).then(georaster => {
+            console.log("georaster:", georaster);
+
+            /*
+                GeoRasterLayer is an extension of GridLayer,
+                which means can use GridLayer options like opacity.
+
+                Just make sure to include the georaster option!
+
+                http://leafletjs.com/reference-1.2.0.html#gridlayer
+            */
+            var layer = new GeoRasterLayer({
+                georaster: georaster,
+                opacity: 0.7
+            });
+            layer.addTo(map);
+
+            map.fitBounds(layer.getBounds());
+
+        });
+        });
+        
+
+
     </script>
 </body>
 </html>
