@@ -128,6 +128,12 @@ class ParSuitApp:
 
         self.total_label.config(text=f"Total: {total}/100")
 
+        # Enable or disable the process button based on the total value
+        if self.is_total_valid():
+            self.process_button.config(state='normal')
+        else:
+            self.process_button.config(state='disabled')
+
     def on_preset_selected(self, event):
         selected_preset = self.preset_combobox.get()
         self.apply_preset_values(selected_preset)
@@ -209,7 +215,8 @@ class ParSuitApp:
         self.process_button = tk.Button(button_frame, text="Process Weighted Overlay",
                                         command=self.process_weighted_overlay,
                                         bg='green', fg='white',
-                                        font=Font(family="Arial", size=12, weight="bold"))
+                                        font=Font(family="Arial", size=12, weight="bold"),
+                                        state='disabled')  # Initially disable the button
         self.process_button.pack(pady=10, padx=20, ipadx=20, ipady=10)
 
     def process_weighted_overlay(self):
@@ -255,6 +262,11 @@ class ParSuitApp:
 
         # After completing the task, enable the OK button
         self.process_completed_button.config(state='normal')
+
+    
+    def is_total_valid(self):
+        total = sum(slider.get() for slider in self.sliders)
+        return total == 100
 
 if __name__ == "__main__":
     root = tk.Tk()
