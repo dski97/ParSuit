@@ -14,13 +14,14 @@ class Configuration:
     IMAGE_PATH = r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit\CRCOG.jpg"
     TITLE_TEXT = "Suitability Analysis for Hartford Capitol Region"
     GEOGRAPHIC_ANALYSIS_TEXT = "Explore the Hartford Capitol Region with ParSuit, your guide to informed land suitability analysis. This tool empowers you to prioritize geographic and environmental factors with simple slider adjustments. From safeguarding against environmental risks to enhancing access to essential services, your input directly shapes the analysis. Once you've set your preferences, a single click reveals a comprehensive map, visualizing the most suitable parcels according to your criteria. ParSuit combines precision with simplicity, offering a clear path to insightful, actionable data for your projects."
-    PRESETS = ["Balanced", "Urban-Intensified", "Rural Favorite", "Community-Based", "Lone Star Ranger"]
+    PRESETS = ["Balanced", "Urban-Intensified", "Rural Favorite", "Community-Based", "Lone Star Ranger", "Reset"]
     PRESET_VALUES = {
         "Balanced": [9] * 10 + [10],
         "Urban-Intensified": [3, 3, 3, 14, 14, 14, 8, 14, 3, 3, 21],
         "Rural Favorite": [14, 14, 14, 3, 3, 3, 9, 3, 14, 14, 9],
         "Community-Based": [3, 9, 3, 16, 16, 11, 16, 9, 3, 2, 12],
-        "Lone Star Ranger": [16, 12, 16, 3, 3, 3, 3, 3, 12, 16, 13]
+        "Lone Star Ranger": [16, 12, 16, 3, 3, 3, 3, 3, 12, 16, 13],
+        "Reset": [0] * 11
     }
     NUM_SLIDERS = len(SLIDER_NAMES)
 
