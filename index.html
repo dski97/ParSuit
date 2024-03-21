@@ -2,45 +2,30 @@
 <html>
 <head>
     <title>Leaflet Map</title>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
         #map {
-            height: 100vh; /* Set the height to full screen */
+            height: 100vh;
         }
     </style>
 </head>
 <body>
     <div id="map"></div>
-    <script src="https://unpkg.com/leaflet@1.0.3/dist/leaflet.js"></script>
-    <script src="https://unpkg.com/georaster"></script>
-    <script src="https://unpkg.com/georaster-layer-for-leaflet"></script>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script>
-        var map = L.map('map').setView([41.5965, -72.8782], 13); /* Set the center to Southington, Connecticut */
+        var map = L.map('map').setView([41.6, -72.7], 9);
 
-    // Add the OpenStreetMap tile layer
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-      attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-      maxZoom: 18,
-    }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+            maxZoom: 18,
+        }).addTo(map);
 
-        fetch('C:/Users/cwalinskid/Desktop/CRCOG Project/ParSuit/Overlay.tif')
-            .then(response => response.arrayBuffer())
-            .then(arrayBuffer => {
-            parseGeoraster(arrayBuffer).then(georaster => {
-                var layer = new GeoRasterLayer({
-                georaster: georaster,
-                opacity: 0.7,
-                resolution: 256,
-                loadingOptions: {
-                    lazy: true,
-                },
-                minZoom: 10,
-                maxZoom: 18,
-                });
-                layer.addTo(map);
+        fetch('https://dski97.github.io/ParSuit/RasterOverlay.geojson')
+            .then(response => response.json())
+            .then(data => {
+                L.geoJSON(data).addTo(map);
             });
-            });
-
     </script>
 </body>
 </html>
