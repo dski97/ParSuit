@@ -6,6 +6,7 @@ from arcpy.sa import *
 #set environment settings
 env.workspace = r"C:\Users\Dominic\Desktop\ParsuitAPX\ParSuit"
 env.overwriteOutput = True
+env.cellSize = 100
 
 # Set local variables for the TIFF raster files
 brownfields = "Reclass_Brownfield.tif"

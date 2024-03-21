@@ -21,11 +21,30 @@
             maxZoom: 18,
         }).addTo(map);
 
-        fetch('https://dski97.github.io/ParSuit/RasterOverlay.geojson')
+        fetch('RasterOverlay.geojson')
             .then(response => response.json())
             .then(data => {
-                L.geoJSON(data).addTo(map);
+                L.geoJSON(data, {
+                    style: function(feature) {
+                        var gridcode = feature.properties.gridcode;
+                        var color = getColor(gridcode);
+                        return {
+                            fillColor: color,
+                            fillOpacity: 0.7,
+                            color: color,
+                            weight: 1
+                        };
+                    }
+                }).addTo(map);
             });
+
+        function getColor(gridcode) {
+            if (gridcode >= 0 && gridcode <= 10) {
+                var hue = (gridcode / 10) * 120; // Convert gridcode to hue (0-120)
+                return `hsl(${hue}, 100%, 50%)`;
+            }
+            return 'gray'; // Default color for gridcode outside the range
+        }
     </script>
 </body>
 </html>
