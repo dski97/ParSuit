@@ -1,79 +1,61 @@
-#import system modules
+# Name: WeightedOverlay_Custom.py
+# Description: Overlays several rasters using a common scale and weighing
+#              each according to its importance.
+# Requirements: Spatial Analyst Extension
+
+# Import system modules
 import arcpy
 from arcpy import env
 from arcpy.sa import *
 
-#set environment settings
-env.workspace = r"C:\Users\Dominic\Desktop\ParsuitAPX\ParSuit"
-env.overwriteOutput = True
-env.cellSize = 100
+# Set environment settings
+arcpy.env.cellSize = 100
+arcpy.env.scratchWorkspace = r"C:\Users\cwalinskid\Desktop\ParSuit"
+arcpy.env.overwriteOutput = True
 
-# Set local variables for the TIFF raster files
-brownfields = "Reclass_Brownfield.tif"
-buildable_soil = "Reclass_BuildableSoil.tif"
-floodzones = "Reclass_Floodzones.tif"
-hospitals = "Reclass_Hospitals.tif"
-police_community = "Reclass_PoliceCommunity.tif"
-roads = "Reclass_Roads.tif"
-schools = "Reclass_Schools.tif"
-sewercon = "Reclass_SewerCon.tif"
-slope = "Reclass_Slope.tif"
-wetlands = "Reclass_Wetlands.tif"
-landuse = "landuse.tif"
+# Set local variables
+inRaster1 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Brownfield.tif"
+inRaster2 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_BuildableSoil.tif"
+inRaster3 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Floodzones.tif"
+inRaster4 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Hospitals.tif"
+inRaster5 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_PoliceCommunity.tif"
+inRaster6 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Roads.tif"
+inRaster7 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Schools.tif"
+inRaster8 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_SewerCon.tif"
+inRaster9 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Slope.tif"
+inRaster10 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Wetlands.tif"
+inRaster11 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\landuse.gdb\\landuse"
 
-# RemapValue objects for each raster, based on your specifications
-remap_brownfield = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_buildableSoil = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_floodzones = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_hospitals = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_policeCommunity = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_roads = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_schools = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_sewerCon = RemapValue([(1, 1), (2, 1), (3, 1), (4, 1), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_slope = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_wetlands = RemapValue([(1, 1), (2, 2), (3, 3), (4, 4), (5, 5), (6, 6), (7, 7), (8, 8), (9, 9), (10, 10), ("NODATA", "NODATA")])
-remap_landuse = RemapValue([
-    ("Impervious Surfaces", 9),
-    ("Developed Open Space", 9),
-    ("Cultivated Land", 8),
-    ("Pasture/Hay", 8),
-    ("Grassland", 8),
-    ("Mixed Forest", 7),
-    ("Scrub/Shrub", 7),
-    ("Palustrine Forested Wetland", 3),
-    ("Palustrine Scrub/Shrub Wetland", 3),
-    ("Palustrine Emergent Wetland", 3),
-    ("Estuarine Emergent Wetland", 3),
-    ("Unconsolidated Shore", 3),
-    ("Bare Land", 10),
-    ("Open Water", "Restricted"), 
-    ("Palustrine Aquatic Bed", "Restricted"), 
-    ("", "NODATA"), 
-    ("NODATA", "NODATA")
-])
+remapBrownfield = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapBuildableSoil = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapFloodzones = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapHospitals = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapPoliceCommunity = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapRoads = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapSchools = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapSewerCon = RemapValue([[1,1],[2,1],[3,1],[4,1],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapSlope = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapWetlands = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapLanduse = RemapValue([["Impervious Surfaces",9],["Developed Open Space",8],["Cultivated Land",8],["Pasture/Hay",8],["Grassland",8],["Mixed Forest",7],["Scrub/Shrub",7],["Palustrine Forested Wetland",3],["Palustrine Scrub/Shrub Wetland",3],["Palustrine Emergent Wetland",3],["Estuarine Emergent Wetland",3],["Unconsolidated Shore",3],["Bare Land",10],["Open Water","Restricted"],["Palustrine Aquatic Bed","Restricted"],["''","NODATA"],["NODATA","NODATA"]])
 
-# Create a Weighted Overlay table for the TIFF raster files
 myWOTable = WOTable([
-    ["Reclass_Brownfield.tif", 9, "VALUE", remap_brownfield],
-    ["Reclass_BuildableSoil.tif", 9, "VALUE", remap_buildableSoil],
-    ["Reclass_Floodzones.tif", 9, "VALUE", remap_floodzones],
-    ["Reclass_Hospitals.tif", 9, "VALUE", remap_hospitals],
-    ["Reclass_PoliceCommunity.tif", 9, "VALUE", remap_policeCommunity],
-    ["Reclass_Roads.tif", 9, "VALUE", remap_roads],
-    ["Reclass_Schools.tif", 9, "VALUE", remap_schools],
-    ["Reclass_SewerCon.tif", 9, "VALUE", remap_sewerCon],
-    ["Reclass_Slope.tif", 9, "VALUE", remap_slope],
-    ["Reclass_Wetlands.tif", 9, "VALUE", remap_wetlands],
-    ["landuse.tif", 10 , "VALUE", remap_landuse]
+    [inRaster1, 9, "VALUE", remapBrownfield],
+    [inRaster2, 9, "VALUE", remapBuildableSoil],
+    [inRaster3, 9, "VALUE", remapFloodzones],
+    [inRaster4, 9, "VALUE", remapHospitals],
+    [inRaster5, 9, "VALUE", remapPoliceCommunity],
+    [inRaster6, 9, "VALUE", remapRoads],
+    [inRaster7, 9, "VALUE", remapSchools],
+    [inRaster8, 9, "VALUE", remapSewerCon],
+    [inRaster9, 9, "VALUE", remapSlope],
+    [inRaster10, 9, "VALUE", remapWetlands],
+    [inRaster11, 10, "LANDUSE", remapLanduse]
 ], [1, 10, 1])
-
 
 # Execute WeightedOverlay
 outWeightedOverlay = WeightedOverlay(myWOTable)
 
 # Save the output
-outWeightedOverlay.save(r"C:\Users\Dominic\Desktop\ParsuitAPX\ParSuit\WeightedOverlay_PyTest.tif")
+outWeightedOverlay.save(r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\output.tif")
 
-# Print a message confirming the script has run
-print("Script completed successfully")
-
+print("Weighted Overlay completed successfully!")
