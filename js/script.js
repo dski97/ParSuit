@@ -23,6 +23,18 @@ fetch('data/RasterOverlay.geojson')
         }).addTo(map);
     });
 
+// Add the ArcGIS feature service
+L.esri.featureLayer({
+    url: 'https://services.arcgis.com/HRPe58bUyBqyyiCt/ArcGIS/rest/services/ParcelsCRCOG/FeatureServer/0',
+    style: function(feature) {
+        return {
+            fillColor: 'transparent',
+            color: 'black',
+            weight: 1
+        };
+    }
+}).addTo(map);
+
 function getColor(gridcode) {
     if (gridcode >= 0 && gridcode <= 10) {
         var hue = (gridcode / 10) * 120; // Convert gridcode to hue (0-120)
