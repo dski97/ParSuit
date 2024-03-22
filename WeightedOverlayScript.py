@@ -10,21 +10,21 @@ from arcpy.sa import *
 
 # Set environment settings
 arcpy.env.cellSize = 100
-arcpy.env.scratchWorkspace = r"C:\Users\cwalinskid\Desktop\ParSuit"
+arcpy.env.scratchWorkspace = r"C:\Users\Dominic\Desktop\ParSuitAPRX"
 arcpy.env.overwriteOutput = True
 
 # Set local variables
-inRaster1 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Brownfield.tif"
-inRaster2 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_BuildableSoil.tif"
-inRaster3 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Floodzones.tif"
-inRaster4 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Hospitals.tif"
-inRaster5 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_PoliceCommunity.tif"
-inRaster6 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Roads.tif"
-inRaster7 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Schools.tif"
-inRaster8 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_SewerCon.tif"
-inRaster9 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Slope.tif"
-inRaster10 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\Reclass_Wetlands.tif"
-inRaster11 = r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\landuse.gdb\\landuse"
+inRaster1 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Brownfield.tif"
+inRaster2 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_BuildableSoil.tif"
+inRaster3 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Floodzones.tif"
+inRaster4 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Hospitals.tif"
+inRaster5 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_PoliceCommunity.tif"
+inRaster6 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Roads.tif"
+inRaster7 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Schools.tif"
+inRaster8 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_SewerCon.tif"
+inRaster9 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Slope.tif"
+inRaster10 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Wetlands.tif"
+inRaster11 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\landuse.gdb\landuse"
 
 remapBrownfield = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapBuildableSoil = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
@@ -36,7 +36,25 @@ remapSchools = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9]
 remapSewerCon = RemapValue([[1,1],[2,1],[3,1],[4,1],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapSlope = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapWetlands = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
-remapLanduse = RemapValue([["Impervious Surfaces",9],["Developed Open Space",8],["Cultivated Land",8],["Pasture/Hay",8],["Grassland",8],["Mixed Forest",7],["Scrub/Shrub",7],["Palustrine Forested Wetland",3],["Palustrine Scrub/Shrub Wetland",3],["Palustrine Emergent Wetland",3],["Estuarine Emergent Wetland",3],["Unconsolidated Shore",3],["Bare Land",10],["Open Water","Restricted"],["Palustrine Aquatic Bed","Restricted"],["''","NODATA"],["NODATA","NODATA"]])
+remapLanduse = RemapValue([
+        [0, "NODATA"],
+        [2, 9],
+        [5, 8],
+        [6, 8],
+        [7, 8],
+        [8, 8],
+        [11, 7],
+        [12, 7],
+        [13, 3],
+        [14, 3],
+        [15, 3],
+        [18, 3],
+        [19, 3],
+        [20, 10],
+        [21, "Restricted"],
+        [22, "Restricted"],
+        ["NODATA", "NODATA"]
+    ])
 
 myWOTable = WOTable([
     [inRaster1, 9, "VALUE", remapBrownfield],
@@ -49,13 +67,25 @@ myWOTable = WOTable([
     [inRaster8, 9, "VALUE", remapSewerCon],
     [inRaster9, 9, "VALUE", remapSlope],
     [inRaster10, 9, "VALUE", remapWetlands],
-    [inRaster11, 10, "LANDUSE", remapLanduse]
+    [inRaster11, 10, "VALUE", remapLanduse]
 ], [1, 10, 1])
 
 # Execute WeightedOverlay
 outWeightedOverlay = WeightedOverlay(myWOTable)
 
 # Save the output
-outWeightedOverlay.save(r"C:\\Users\\cwalinskid\\Desktop\\ParSuit\\output.tif")
+outWeightedOverlay.save(r"C:\Users\Dominic\Desktop\ParSuitAPRX\output.tif")
 
 print("Weighted Overlay completed successfully!")
+
+#Convert output raster to polygon
+arcpy.RasterToPolygon_conversion(outWeightedOverlay, r"C:\Users\Dominic\Desktop\ParSuitAPRX\raster_polygon.shp", "NO_SIMPLIFY", "VALUE")
+print("Raster to Polygon completed successfully!")
+
+#Dissolve output polygon based on the gridcode field
+arcpy.Dissolve_management(r"C:\Users\Dominic\Desktop\ParSuitAPRX\raster_polygon.shp", r"C:\Users\Dominic\Desktop\ParSuitAPRX\dissolved_polygon.shp", "gridcode", "", "MULTI_PART")
+print("Dissolve completed successfully!")
+
+#Convert disolved polygon to geojson
+arcpy.FeaturesToJSON_conversion(r"C:\Users\Dominic\Desktop\ParSuitAPRX\dissolved_polygon.shp", r"C:\Users\Dominic\Desktop\ParSuitAPRX\WeightedOverlay.geojson", "FORMATTED", "NO_Z_VALUES", "NO_M_VALUES", "GEOJSON", "WGS84", "USE_FIELD_NAME")
+print("Conversion to GeoJSON completed successfully!")
