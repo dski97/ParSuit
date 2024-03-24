@@ -109,7 +109,7 @@ var rasterLayer = fetch('data/RasterOverlay.geojson')
       style: function(feature) {
         return {
           fillColor: getColor(feature.properties.gridcode),
-          fillOpacity: 0.6,
+          fillOpacity: 0.7,
           color: getColor(feature.properties.gridcode),
           weight: 1
         };
