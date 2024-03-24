@@ -177,6 +177,21 @@ Promise.all([
   L.control.layers({}, overlayLayers, {collapsed: false}).addTo(map);
 });
 
+// Load and add the boundary layer with dark black outline and no fill
+fetch('data/Boundary.geojson')
+  .then(response => response.json())
+  .then(data => {
+    L.geoJSON(data, {
+      // Style for the boundary
+      style: {
+        color: '#000000', // Dark black
+        weight: 10, // Thickness of the line
+        fillOpacity: 0 // No fill
+      }
+    }).addTo(map); // Add to the map without event listeners
+  });
+
+
 function updateInfoBox(gridcode) {
   var infoBox = document.getElementById('info-box');
   var scoreElement = document.getElementById('score');
