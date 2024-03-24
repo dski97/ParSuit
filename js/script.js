@@ -13,23 +13,45 @@ L.Control.geocoder({
   defaultMarkGeocode: true
 }).addTo(map);
 
-// Function to fetch and return a GeoJSON layer with a specific icon
+// Function to fetch and return a GeoJSON layer with a specific icon, and add popups based on layer type
 async function addLayerFromGeoJSON(dataPath, iconName) {
   let response = await fetch(dataPath);
   let data = await response.json();
   return L.geoJSON(data, {
     pointToLayer: function(feature, latlng) {
-      return L.marker(latlng, {
+      let marker = L.marker(latlng, {
         icon: L.icon({
           iconUrl: `icons/${iconName}.png`,
-          iconSize: [18, 18],
+          iconSize: [19, 19],
           iconAnchor: [8, 16],
           popupAnchor: [0, -16]
         })
       });
+
+      // Bind popups with specific fields based on the iconName (layer type)
+      if(iconName === 'school') {
+        let popupContent = `<h3>${feature.properties.SchoolProg}</h3>
+                            <p><strong>District:</strong> ${feature.properties.DistrictNa}</p>
+                            <p><strong>Address:</strong> ${feature.properties.Line1Addr}</p>`;
+        marker.bindPopup(popupContent);
+      } else if(iconName === 'police') {
+        let popupContent = `<h3>${feature.properties.NAME}</h3>
+                            <p><strong>Address:</strong> ${feature.properties.ADDRESS}</p>`;
+        marker.bindPopup(popupContent);
+      } else if(iconName === 'hospital') {
+        let popupContent = `<h3>${feature.properties.NAME}</h3>
+                            <p><strong>Trauma Center Status:</strong> ${feature.properties.Trauma_Cen}</p>`;
+        marker.bindPopup(popupContent);
+      } else if(iconName === 'brownfield') {
+        let popupContent = `<h3>${feature.properties.Name}</h3>`;
+        marker.bindPopup(popupContent);
+      }
+
+      return marker;
     }
   });
 }
+
 
 // Simplified getColor function
 function getColor(gridcode) {
@@ -61,6 +83,15 @@ var rasterLayer = fetch('data/RasterOverlay.geojson')
 // Define and add the feature service layer
 var featureLayer = L.esri.featureLayer({
   url: 'https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/ParcelsCRCOG/FeatureServer/0',
+  style: function() {
+    return {
+      color: '#000000', // Border color
+      weight: 1, // Border weight
+      opacity: 1, // Border opacity
+      fillColor: 'gray', // Fill color as gray
+      fillOpacity: 0.05 // Lower the fill opacity
+    };
+  },
   onEachFeature: function(feature, layer) {
     var popupContent = '';
     if (feature.properties.LOCATION) {
@@ -75,6 +106,30 @@ var featureLayer = L.esri.featureLayer({
     layer.bindPopup(popupContent);
   }
 });
+// Define the zoom level threshold
+var zoomThreshold = 17;
+
+// Function to check and update the visibility of the Feature Layer based on the current zoom level
+function updateFeatureLayerVisibility() {
+    var currentZoom = map.getZoom();
+    if (currentZoom >= zoomThreshold) {
+        if (!map.hasLayer(featureLayer)) {
+            featureLayer.addTo(map);
+        }
+    } else {
+        if (map.hasLayer(featureLayer)) {
+            map.removeLayer(featureLayer);
+        }
+    }
+}
+
+// Listen for the zoomend event on the map
+map.on('zoomend', function() {
+    updateFeatureLayerVisibility();
+});
+
+// Initial check to set the correct visibility when the map is first loaded
+updateFeatureLayerVisibility();
 
 // Add layers for various features
 Promise.all([
@@ -84,34 +139,13 @@ Promise.all([
   addLayerFromGeoJSON('data/Schools.geojson', 'school'),
   rasterLayer
 ]).then(layers => {
-  overlayLayers["Brownfields"] = layers[0].addTo(map);
-  overlayLayers["Hospitals"] = layers[1].addTo(map);
-  overlayLayers["Police Stations"] = layers[2].addTo(map);
-  overlayLayers["Schools"] = layers[3].addTo(map);
-  overlayLayers["Raster Overlay"] = layers[4].addTo(map);
-
-  overlayLayers["Feature Layer"] = featureLayer.addTo(map);
+  overlayLayers["Brownfields"] = layers[0]; // Removed .addTo(map)
+  overlayLayers["Hospitals"] = layers[1]; // Removed .addTo(map)
+  overlayLayers["Police Stations"] = layers[2]; // Removed .addTo(map)
+  overlayLayers["Schools"] = layers[3]; // Removed .addTo(map)
+  overlayLayers["Suitability Raster"] = layers[4].addTo(map); // Raster Overlay can remain visible by default or remove .addTo(map) to hide it initially
+  overlayLayers["Parcels"] = featureLayer; // Removed .addTo(map) to keep featureLayer off initially, if desired
 
   // Add the layer control to the map
   L.control.layers({}, overlayLayers, {collapsed: false}).addTo(map);
 });
-
-// Unified function to control feature layer visibility based on zoom level
-function controlFeatureLayerVisibility() {
-    var currentZoom = map.getZoom();
-    if (currentZoom >= 16) {
-      if (!map.hasLayer(featureLayer)) {
-        map.addLayer(featureLayer);
-      }
-    } else {
-      if (map.hasLayer(featureLayer)) {
-        map.removeLayer(featureLayer);
-      }
-    }
-}
-
-// Execute controlFeatureLayerVisibility after a slight delay to ensure map initialization
-setTimeout(controlFeatureLayerVisibility, 100);
-
-// Listen for zoom end events to control the feature service layer based on zoom level
-map.on('zoomend', controlFeatureLayerVisibility);

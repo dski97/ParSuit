@@ -9,7 +9,7 @@ from arcpy import env
 from arcpy.sa import *
 
 # Set environment settings
-arcpy.env.cellSize = 100
+arcpy.env.cellSize = 150
 arcpy.env.scratchWorkspace = r"C:\Users\Dominic\Desktop\ParSuitAPRX"
 arcpy.env.overwriteOutput = True
 
