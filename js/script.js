@@ -8,14 +8,39 @@ map.getPane('rasterPane').style.zIndex = 450;
 map.createPane('parcelPane');
 map.getPane('parcelPane').style.zIndex = 400; // Make sure this is lower than rasterPane
 
+//Gray layer
+var Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
+	minZoom: 10,
+	maxZoom: 19,
+	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+	ext: 'png'
+});
 
 
-// Base layer
+// OSM layer
 var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
   maxZoom: 19,
   minZoom: 10
-}).addTo(map);
+});
+
+//Satiellite layer
+var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
+	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+  maxZoom: 19,
+  minZoom: 10
+});
+
+
+//Add osmlayer to map
+Stadia_AlidadeSmooth.addTo(map);
+
+//Define base layers for toggling
+var baseLayers = {
+  "OSM": osmLayer,
+  "Satellite": satelliteLayer,
+  "Gray": Stadia_AlidadeSmooth
+};
 
 // Add the geocoder control to the map
 L.Control.geocoder({
@@ -235,3 +260,45 @@ L.control.Legend ({
   },
   ]
 }).addTo(map);
+
+// Add the layer control to the map, including both base layers and overlay layers
+L.control.layers(baseLayers, overlayLayers, {collapsed: false}).addTo(map);
+
+// Define the main extent of the map
+var mainExtent = {
+  lat: 41.7647,
+  lng: -72.6828,
+  zoom: 10
+};
+
+// Create a custom control for returning to the main extent
+L.Control.ReturnToExtent = L.Control.extend({
+  options: {
+    position: 'topleft', // Position of the control
+  },
+
+  onAdd: function (map) {
+    // Create a button element
+    var container = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
+    container.innerHTML = 'Return to Main Extent'; // Text on the button
+    container.style.backgroundColor = 'white';    
+    container.style.width = 'auto';
+    container.style.height = 'auto';
+    container.style.padding = '5px';
+    container.style.fontSize = '12px';
+    container.style.cursor = 'pointer';
+
+    // Prevent map clicks when clicking the control
+    L.DomEvent.disableClickPropagation(container);
+
+    // Set the map view to the main extent when the button is clicked
+    L.DomEvent.on(container, 'click', function() {
+      map.setView([mainExtent.lat, mainExtent.lng], mainExtent.zoom);
+    });
+
+    return container;
+  }
+});
+
+// Add the custom control to the map
+map.addControl(new L.Control.ReturnToExtent());
