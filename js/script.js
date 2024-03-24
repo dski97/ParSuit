@@ -1,5 +1,15 @@
 var map = L.map('map').setView([41.7647, -72.6828], 10);
 
+// Custom pane for the raster overlay with higher z-index for mouse interaction
+map.createPane('rasterPane');
+map.getPane('rasterPane').style.zIndex = 450;
+
+// Custom pane for parcels to ensure they are clickable, but below the raster layer
+map.createPane('parcelPane');
+map.getPane('parcelPane').style.zIndex = 400; // Make sure this is lower than rasterPane
+
+
+
 // Base layer
 var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
@@ -64,65 +74,82 @@ function getColor(gridcode) {
 // Initialize overlay layers object for control
 var overlayLayers = {};
 
-// Add Raster Overlay layer
+var rasterLayerObj;
+
 var rasterLayer = fetch('data/RasterOverlay.geojson')
   .then(response => response.json())
   .then(data => {
     return L.geoJSON(data, {
+      pane: 'rasterPane',
       style: function(feature) {
         return {
           fillColor: getColor(feature.properties.gridcode),
-          fillOpacity: 0.7,
+          fillOpacity: 0.6,
           color: getColor(feature.properties.gridcode),
           weight: 1
         };
-      }
+      },
+      onEachFeature: function(feature, layer) {
+        layer.on('mouseover', function(e) {
+          var gridcode = feature.properties.gridcode;
+          updateInfoBox(gridcode);
+        });
+        layer.on('mouseout', function(e) {
+          clearInfoBox();
+        });
+      },
     });
   });
 
-// Define and add the feature service layer
-var featureLayer = L.esri.featureLayer({
-  url: 'https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/ParcelsCRCOG/FeatureServer/0',
-  style: function() {
-    return {
-      color: '#000000', // Border color
-      weight: 1, // Border weight
-      opacity: 1, // Border opacity
-      fillColor: 'gray', // Fill color as gray
-      fillOpacity: 0.05 // Lower the fill opacity
-    };
-  },
-  onEachFeature: function(feature, layer) {
-    var popupContent = '';
-    if (feature.properties.LOCATION) {
-      popupContent += '<h3>Location: ' + feature.properties.LOCATION + '</h3>';
-    }
-    if (feature.properties.Town_Name) {
-      popupContent += '<p>Town Name: ' + feature.properties.Town_Name + '</p>';
-    }
-    if (feature.properties.OWNER) {
-      popupContent += '<p>Owner: ' + feature.properties.OWNER + '</p>';
-    }
-    layer.bindPopup(popupContent);
-  }
-});
+// Create a feature layer for the parcels
+  var featureLayer = L.esri.featureLayer({
+    url: 'https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/ParcelsCRCOG/FeatureServer/0',
+    pane: 'parcelPane',
+    style: function() {
+      return {
+        color: '#000000', // Border color
+        weight: 1, // Border weight
+        opacity: 1, // Border opacity
+        fillColor: 'gray', // Fill color as gray
+        fillOpacity: 0 // Lower the fill opacity
+      };
+    },
+    onEachFeature: function(feature, layer) {
+      var popupContent = '';
+      if (feature.properties.LOCATION) {
+        popupContent += '<h3>Location: ' + feature.properties.LOCATION + '</h3>';
+      }
+      if (feature.properties.Town_Name) {
+        popupContent += '<p>Town Name: ' + feature.properties.Town_Name + '</p>';
+      }
+      if (feature.properties.OWNER) {
+        popupContent += '<p>Owner: ' + feature.properties.OWNER + '</p>';
+      }
+      layer.bindPopup(popupContent);
+    },
+  });
+  
+  // Create a custom pane for the parcel layer
+  map.createPane('parcelPane');
+  map.getPane('parcelPane').style.zIndex = 300;
+
+
 // Define the zoom level threshold
 var zoomThreshold = 17;
 
 // Function to check and update the visibility of the Feature Layer based on the current zoom level
 function updateFeatureLayerVisibility() {
-    var currentZoom = map.getZoom();
-    if (currentZoom >= zoomThreshold) {
-        if (!map.hasLayer(featureLayer)) {
-            featureLayer.addTo(map);
-        }
-    } else {
-        if (map.hasLayer(featureLayer)) {
-            map.removeLayer(featureLayer);
-        }
+  var currentZoom = map.getZoom();
+  if (currentZoom >= zoomThreshold) {
+    if (!map.hasLayer(featureLayer)) {
+      featureLayer.addTo(map);
     }
+  } else {
+    if (map.hasLayer(featureLayer)) {
+      map.removeLayer(featureLayer);
+    }
+  }
 }
-
 // Listen for the zoomend event on the map
 map.on('zoomend', function() {
     updateFeatureLayerVisibility();
@@ -139,13 +166,34 @@ Promise.all([
   addLayerFromGeoJSON('data/Schools.geojson', 'school'),
   rasterLayer
 ]).then(layers => {
-  overlayLayers["Brownfields"] = layers[0]; // Removed .addTo(map)
-  overlayLayers["Hospitals"] = layers[1]; // Removed .addTo(map)
-  overlayLayers["Police Stations"] = layers[2]; // Removed .addTo(map)
-  overlayLayers["Schools"] = layers[3]; // Removed .addTo(map)
-  overlayLayers["Suitability Raster"] = layers[4].addTo(map); // Raster Overlay can remain visible by default or remove .addTo(map) to hide it initially
-  overlayLayers["Parcels"] = featureLayer; // Removed .addTo(map) to keep featureLayer off initially, if desired
+  overlayLayers["Brownfields"] = layers[0];
+  overlayLayers["Hospitals"] = layers[1];
+  overlayLayers["Police Stations"] = layers[2];
+  overlayLayers["Schools"] = layers[3];
+  overlayLayers["Suitability Raster"] = layers[4].addTo(map);
+  overlayLayers["Parcels"] = featureLayer;
 
   // Add the layer control to the map
   L.control.layers({}, overlayLayers, {collapsed: false}).addTo(map);
 });
+
+function updateInfoBox(gridcode) {
+  var infoBox = document.getElementById('info-box');
+  var scoreElement = document.getElementById('score');
+  
+  if (infoBox && scoreElement) {
+    scoreElement.textContent = gridcode;
+    infoBox.style.backgroundColor = getColor(gridcode);
+    infoBox.style.display = 'block';
+  }
+}
+
+function clearInfoBox() {
+  var infoBox = document.getElementById('info-box');
+  var scoreElement = document.getElementById('score');
+  
+  if (infoBox && scoreElement) {
+    scoreElement.textContent = '-';
+    infoBox.style.backgroundColor = 'white';
+  }
+}
