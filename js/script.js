@@ -187,7 +187,8 @@ fetch('data/Boundary.geojson')
         color: '#000000', // Dark black
         weight: 10, // Thickness of the line
         fillOpacity: 0 // No fill
-      }
+      },
+      interactive: false // Disable interactivity
     }).addTo(map); // Add to the map without event listeners
   });
 
@@ -212,3 +213,25 @@ function clearInfoBox() {
     infoBox.style.backgroundColor = 'white';
   }
 }
+
+L.control.Legend ({
+  position: "bottomleft",
+  legends: [{
+    label: "Brownfields",
+    type: "image",
+    url: "icons/brownfield.png",
+  }, {
+    label: "Hospitals",
+    type: "image",
+    url: "icons/hospital.png",
+  }, {
+    label: "Police Stations",
+    type: "image",
+    url: "icons/police.png",
+  }, {
+    label: "Schools",
+    type: "image",
+    url: "icons/school.png",
+  },
+  ]
+}).addTo(map);
