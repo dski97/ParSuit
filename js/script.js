@@ -2,8 +2,14 @@ var map = L.map('map').setView([41.7647, -72.6828], 10);
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-  maxZoom: 18,
+  maxZoom: 19,
   minZoom: 10
+}).addTo(map);
+
+// Add the geocoder control to the map
+L.Control.geocoder({
+    position: 'topleft',
+    defaultMarkGeocode: true
 }).addTo(map);
 
 // Function to fetch and add a GeoJSON layer with a specific icon
@@ -58,8 +64,33 @@ addLayerFromGeoJSON('data/Schools.geojson', 'school');
 
 // Add the feature service layer with minZoom option
 var featureLayer = L.esri.featureLayer({
-  url: 'https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/ParcelsCRCOG/FeatureServer/0'
-}).addTo(map);
+    url: 'https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/ParcelsCRCOG/FeatureServer/0',
+    onEachFeature: function(feature, layer) {
+      // Check if the feature has properties and the required properties are present
+      if (feature.properties) {
+        // Initialize the popup content string
+        var popupContent = '';
+        
+        // Check and add LOCATION
+        if (feature.properties.LOCATION) {
+          popupContent += '<h3>Location: ' + feature.properties.LOCATION + '</p>';
+        }
+        
+        // Check and add Town_Name
+        if (feature.properties.Town_Name) {
+          popupContent += '<p>Town Name: ' + feature.properties.Town_Name + '</p>';
+        }
+        
+        // Check and add Owner
+        if (feature.properties.OWNER) {
+          popupContent += '<p>Owner: ' + feature.properties.OWNER + '</p>';
+        }
+  
+        // Bind the constructed popup content to the current layer
+        layer.bindPopup(popupContent);
+      }
+    }
+  }).addTo(map);
 
 var legend = L.control.legend({
   position: 'bottomleft',
@@ -105,3 +136,5 @@ function updateFeatureLayerVisibility() {
   
   // Initial check to set the correct visibility of the feature service layer
   updateFeatureLayerVisibility();
+
+  
