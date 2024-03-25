@@ -11,7 +11,7 @@
 
 
 // Set up the map
-var map = L.map('map').setView([41.7647, -72.6828], 10);
+var map = L.map('map').setView([41.7647, -72.5828], 10);
 
 // Function to create and style panes
 function createPane(name, zIndex) {
@@ -175,7 +175,7 @@ updateFeatureLayerVisibility(); // Update the visibility of the feature layer in
 function updateInfoBox(gridcode) { // Function to update the info box with the gridcode
   var infoBox = document.getElementById('info-box'); // Get the info box element
   if (infoBox) { // If the info box element exists
-    infoBox.innerHTML = `Gridcode: ${gridcode}`; // Update the content with the gridcode
+    infoBox.innerHTML = `Suitability Score: ${gridcode}`; // Update the content with the gridcode
     infoBox.style.backgroundColor = getColor(gridcode); // Update the background color based on the gridcode
     infoBox.style.display = 'block'; // Display the info box
   }
@@ -208,7 +208,7 @@ class ReturnToExtentControl extends L.Control { // Custom control for returning 
     container.style.cursor = 'pointer'; // Set the cursor to pointer
     L.DomEvent.disableClickPropagation(container); // Disable click propagation
     L.DomEvent.on(container, 'click', () => { // Add a click event listener
-      map.setView([41.7647, -72.6828], 10); // Return to the main extent
+      map.setView([41.7647, -72.5828], 10); // Return to the main extent
     });
     return container; // Return the container
   }
