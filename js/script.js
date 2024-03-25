@@ -1,244 +1,211 @@
+// Set up the map
 var map = L.map('map').setView([41.7647, -72.6828], 10);
 
-// Custom pane for the raster overlay with higher z-index for mouse interaction
-map.createPane('rasterPane');
-map.getPane('rasterPane').style.zIndex = 450;
+// Function to create and style panes
+function createPane(name, zIndex) {
+  map.createPane(name); // Create a pane with the given name
+  map.getPane(name).style.zIndex = zIndex; // Set the z-index of the pane
+}
 
-// Custom pane for parcels to ensure they are clickable, but below the raster layer
-map.createPane('parcelPane');
-map.getPane('parcelPane').style.zIndex = 400; // Make sure this is lower than rasterPane
+createPane('rasterPane', 450); // Create a pane for the raster layer
+createPane('parcelPane', 400); // Create a pane for the parcel layer
 
-//Gray layer
-var Stadia_AlidadeSmooth = L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.{ext}', {
-	minZoom: 10,
-	maxZoom: 19,
-	attribution: '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-	ext: 'png'
-});
+// Function to create a tile layer
+function createTileLayer(url, attribution, minZoom = 10, maxZoom = 19, ext = 'png') { // Default values for minZoom, maxZoom, and ext
+  return L.tileLayer(url, { attribution, minZoom, maxZoom, ext }); // Return a tile layer with the given URL, attribution, minZoom, maxZoom, and ext
+}
+// Stadia Alidade Smooth tile layer is added to the map
+var Stadia_AlidadeSmooth = createTileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
+  '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
 
+// OSM, Satellite, and Gray tile layers are created
+var osmLayer = createTileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+  'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors');
 
-// OSM layer
-var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
-  maxZoom: 19,
-  minZoom: 10
-});
+// Satellite tile layer is added to the map
+var satelliteLayer = createTileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community');
 
-//Satiellite layer
-var satelliteLayer = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-	attribution: 'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
-  maxZoom: 19,
-  minZoom: 10
-});
-
-
-//Add osmlayer to map
+//Stadia map open by default
 Stadia_AlidadeSmooth.addTo(map);
 
-//Define base layers for toggling
-var baseLayers = {
-  "OSM": osmLayer,
-  "Satellite": satelliteLayer,
-  "Gray": Stadia_AlidadeSmooth
-};
+// Base layers are created
+var baseLayers = { "OSM": osmLayer, "Satellite": satelliteLayer, "Gray": Stadia_AlidadeSmooth };
 
-// Add the geocoder control to the map
-L.Control.geocoder({
-  position: 'topleft',
-  defaultMarkGeocode: true
-}).addTo(map);
+// Geocoder control is added to the map
+L.Control.geocoder({ position: 'topleft', defaultMarkGeocode: true }).addTo(map);
 
-// Function to fetch and return a GeoJSON layer with a specific icon, and add popups based on layer type
-async function addLayerFromGeoJSON(dataPath, iconName) {
-  let response = await fetch(dataPath);
-  let data = await response.json();
-  return L.geoJSON(data, {
-    pointToLayer: function(feature, latlng) {
-      let marker = L.marker(latlng, {
-        icon: L.icon({
-          iconUrl: `icons/${iconName}.png`,
-          iconSize: [19, 19],
-          iconAnchor: [8, 16],
-          popupAnchor: [0, -16]
-        })
-      });
-
-      // Bind popups with specific fields based on the iconName (layer type)
-      if(iconName === 'school') {
-        let popupContent = `<h3>${feature.properties.SchoolProg}</h3>
-                            <p><strong>District:</strong> ${feature.properties.DistrictNa}</p>
-                            <p><strong>Address:</strong> ${feature.properties.Line1Addr}</p>`;
-        marker.bindPopup(popupContent);
-      } else if(iconName === 'police') {
-        let popupContent = `<h3>${feature.properties.NAME}</h3>
-                            <p><strong>Address:</strong> ${feature.properties.ADDRESS}</p>`;
-        marker.bindPopup(popupContent);
-      } else if(iconName === 'hospital') {
-        let popupContent = `<h3>${feature.properties.NAME}</h3>
-                            <p><strong>Trauma Center Status:</strong> ${feature.properties.Trauma_Cen}</p>`;
-        marker.bindPopup(popupContent);
-      } else if(iconName === 'brownfield') {
-        let popupContent = `<h3>${feature.properties.Name}</h3>`;
-        marker.bindPopup(popupContent);
-      }
-
-      return marker;
-    }
+// Function to add a GeoJSON layer to the map
+async function addLayerFromGeoJSON(dataPath, iconName) { // Function to add a GeoJSON layer to the map
+  let response = await fetch(dataPath); // Fetch the data from the given path
+  let data = await response.json(); // Get the JSON data from the response
+  return L.geoJSON(data, { // Create a GeoJSON layer with the data
+    pointToLayer: (feature, latlng) => L.marker(latlng, { icon: L.icon({ iconUrl: `icons/${iconName}.png`, iconSize: [20, 20], iconAnchor: [8, 16], popupAnchor: [0, -16] }) }) // Create a marker with the given icon
+      .bindPopup(getPopupContent(iconName, feature)) // Bind a popup with the content returned by getPopupContent
   });
 }
 
-
-// Simplified getColor function
-function getColor(gridcode) {
-  if (gridcode >= 0 && gridcode <= 10) {
-    return `hsl(${(gridcode / 10) * 120}, 100%, 50%)`;
+// Function to get the popup content based on the icon name and feature
+function getPopupContent(iconName, feature) { // Function to get the popup content based on the icon name and feature
+  const props = feature.properties; // Get the properties of the feature
+  switch (iconName) { // Check the icon name
+    case 'school': // If the icon name is 'school'
+      return `<h3>${props.SchoolProg}</h3><p><strong>District:</strong> ${props.DistrictNa}</p><p><strong>Address:</strong> ${props.Line1Addr}</p>`;
+    case 'police': // If the icon name is 'police'
+      return `<h3>${props.NAME}</h3><p><strong>Address:</strong> ${props.ADDRESS}</p>`;
+    case 'hospital': // If the icon name is 'hospital'
+      return `<h3>${props.NAME}</h3><p><strong>Trauma Center Status:</strong> ${props.Trauma_Cen}</p>`;
+    case 'brownfield': // If the icon name is 'brownfield'
+      return `<h3>${props.Name}</h3>`;
+    default: // If the icon name is not recognized
+      return ''; // Default popup content if none matches
   }
-  return 'gray';
 }
 
-// Initialize overlay layers object for control
+// Function to get the color based on the gridcode
+function getColor(gridcode) { // Function to get the color based on the gridcode
+  return gridcode >= 0 && gridcode <= 10 ? `hsl(${(gridcode / 10) * 120}, 100%, 50%)` : 'gray'; // Return a color based on the gridcode
+}
+
+// Object to store the overlay layers
 var overlayLayers = {};
 
-var rasterLayerObj;
-
-var rasterLayer = fetch('data/RasterOverlay.geojson')
-  .then(response => response.json())
-  .then(data => {
-    return L.geoJSON(data, {
-      pane: 'rasterPane',
-      style: function(feature) {
-        return {
-          fillColor: getColor(feature.properties.gridcode),
-          fillOpacity: 0.7,
-          color: getColor(feature.properties.gridcode),
-          weight: 1
-        };
-      },
-      onEachFeature: function(feature, layer) {
-        layer.on('mouseover', function(e) {
-          var gridcode = feature.properties.gridcode;
-          updateInfoBox(gridcode);
-        });
-        layer.on('mouseout', function(e) {
-          clearInfoBox();
-        });
-      },
-    });
-  });
-
-// Create a feature layer for the parcels
-  var featureLayer = L.esri.featureLayer({
-    url: 'https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/ParcelsCRCOG/FeatureServer/0',
-    pane: 'parcelPane',
-    style: function() {
-      return {
-        color: '#000000', // Border color
-        weight: 1, // Border weight
-        opacity: 1, // Border opacity
-        fillColor: 'gray', // Fill color as gray
-        fillOpacity: 0 // Lower the fill opacity
-      };
+// Function to add the raster layer to the map
+async function addRasterLayer() { 
+  const response = await fetch('data/RasterOverlay.geojson'); // Fetch the raster data
+  const data = await response.json(); // Get the JSON data from the response
+  return L.geoJSON(data, { // Create a GeoJSON layer with the data
+    pane: 'rasterPane', // Add the layer to the 'rasterPane' pane
+    style: feature => ({ // Style each feature based on its properties
+      fillColor: getColor(feature.properties.gridcode), // Fill color based on the gridcode
+      fillOpacity: 0.7, // Fill opacity
+      color: getColor(feature.properties.gridcode), // Border color based on the gridcode
+      weight: 1 // Border weight
+    }),
+    onEachFeature: (feature, layer) => { // Add event listeners to each feature
+      layer.on('mouseover', () => updateInfoBox(feature.properties.gridcode)); // Update the info box on mouseover
+      layer.on('mouseout', clearInfoBox); // Clear the info box on mouseout
     },
-    onEachFeature: function(feature, layer) {
-      var popupContent = '';
-      if (feature.properties.LOCATION) {
-        popupContent += '<h3>Location: ' + feature.properties.LOCATION + '</h3>';
-      }
-      if (feature.properties.Town_Name) {
-        popupContent += '<p>Town Name: ' + feature.properties.Town_Name + '</p>';
-      }
-      if (feature.properties.OWNER) {
-        popupContent += '<p>Owner: ' + feature.properties.OWNER + '</p>';
-      }
-      layer.bindPopup(popupContent);
-    },
-  });
-  
-  // Create a custom pane for the parcel layer
-  map.createPane('parcelPane');
-  map.getPane('parcelPane').style.zIndex = 300;
+  }).addTo(map); // Add the layer to the map
+}
 
+// Feature layer is created
+var featureLayer = L.esri.featureLayer({
+  url: 'https://services.arcgis.com/HRPe58bUyBqyyiCt/arcgis/rest/services/ParcelsCRCOG/FeatureServer/0',
+  pane: 'parcelPane', // Add the layer to the 'parcelPane' pane
+  style: () => ({ // Style each feature
+    color: '#000000', // Border color
+    weight: 1, // Border weight
+    opacity: 1, // Border opacity
+    fillColor: 'gray', // Fill color
+    fillOpacity: 0 // Fill opacity
+  }),
+  onEachFeature: (feature, layer) => { // Add event listeners to each feature
+    var popupContent = `<h3>Location: ${feature.properties.LOCATION || ''}</h3>` +
+                       `<p>Town Name: ${feature.properties.Town_Name || ''}</p>` +
+                       `<p>Owner: ${feature.properties.OWNER || ''}</p>`;
+    layer.bindPopup(popupContent); // Bind a popup with the content
+  },
+});
 
-// Define the zoom level threshold
-var zoomThreshold = 17;
+var zoomThreshold = 17; // Zoom threshold for showing the feature layer
 
-// Function to check and update the visibility of the Feature Layer based on the current zoom level
-function updateFeatureLayerVisibility() {
-  var currentZoom = map.getZoom();
-  if (currentZoom >= zoomThreshold) {
-    if (!map.hasLayer(featureLayer)) {
-      featureLayer.addTo(map);
+// Function to update the visibility of the feature layer based on the zoom level
+function updateFeatureLayerVisibility() { 
+  var currentZoom = map.getZoom(); // Get the current zoom level
+  if (currentZoom >= zoomThreshold) { // If the current zoom level is greater than or equal to the threshold
+    if (!map.hasLayer(featureLayer)) { // If the map does not have the feature layer
+      featureLayer.addTo(map); // Add the feature layer to the map
     }
   } else {
-    if (map.hasLayer(featureLayer)) {
-      map.removeLayer(featureLayer);
+    if (map.hasLayer(featureLayer)) { // If the map has the feature layer
+      map.removeLayer(featureLayer); // Remove the feature layer from the map
     }
   }
 }
-// Listen for the zoomend event on the map
-map.on('zoomend', function() {
-    updateFeatureLayerVisibility();
-});
 
-// Initial check to set the correct visibility when the map is first loaded
-updateFeatureLayerVisibility();
+map.on('zoomend', updateFeatureLayerVisibility); // Update the visibility of the feature layer on zoomend
+updateFeatureLayerVisibility(); // Update the visibility of the feature layer initially
 
-// Add layers for various features
-Promise.all([
-  addLayerFromGeoJSON('data/Brownfields.geojson', 'brownfield'),
-  addLayerFromGeoJSON('data/Hospitals.geojson', 'hospital'),
-  addLayerFromGeoJSON('data/Police Stations.geojson', 'police'),
-  addLayerFromGeoJSON('data/Schools.geojson', 'school'),
-  rasterLayer
-]).then(layers => {
-  overlayLayers["Brownfields"] = layers[0];
-  overlayLayers["Hospitals"] = layers[1];
-  overlayLayers["Police Stations"] = layers[2];
-  overlayLayers["Schools"] = layers[3];
-  overlayLayers["Suitability Raster"] = layers[4].addTo(map);
-  overlayLayers["Parcels"] = featureLayer;
+// Loading multiple GeoJSON layers and the raster layer
+(async () => {
+  const layers = await Promise.all([ // Load multiple layers asynchronously
+    addLayerFromGeoJSON('data/Brownfields.geojson', 'brownfield'), 
+    addLayerFromGeoJSON('data/Hospitals.geojson', 'hospital'),
+    addLayerFromGeoJSON('data/Police Stations.geojson', 'police'),
+    addLayerFromGeoJSON('data/Schools.geojson', 'school'),
+    addRasterLayer()
+  ]);
 
-  // Add the layer control to the map
-  L.control.layers({}, overlayLayers, {collapsed: false}).addTo(map);
-});
+  const layerNames = ["Brownfields", "Hospitals", "Police Stations", "Schools", "Suitability Raster"]; // Names of the layers
+  layerNames.forEach((name, index) => overlayLayers[name] = layers[index]); // Add the layers to the overlayLayers object
 
-// Load and add the boundary layer with dark black outline and no fill
-fetch('data/Boundary.geojson')
-  .then(response => response.json())
-  .then(data => {
-    L.geoJSON(data, {
-      // Style for the boundary
-      style: {
-        color: '#000000', // Dark black
-        weight: 10, // Thickness of the line
-        fillOpacity: 0 // No fill
-      },
-      interactive: false // Disable interactivity
-    }).addTo(map); // Add to the map without event listeners
-  });
+  overlayLayers["Parcels"] = featureLayer; // Add the feature layer to the overlayLayers object
 
+  L.control.layers(baseLayers, overlayLayers, {collapsed: false}).addTo(map); // Add the layers control to the map
+})();
 
-function updateInfoBox(gridcode) {
-  var infoBox = document.getElementById('info-box');
-  var scoreElement = document.getElementById('score');
-  
-  if (infoBox && scoreElement) {
-    scoreElement.textContent = gridcode;
-    infoBox.style.backgroundColor = getColor(gridcode);
-    infoBox.style.display = 'block';
+// Boundary layer is added to the map
+(async () => {
+  const response = await fetch('data/Boundary.geojson'); // Fetch the boundary data
+  const data = await response.json(); // Get the JSON data from the response
+  L.geoJSON(data, { // Create a GeoJSON layer with the data
+    style: {
+      color: '#000000', // Border color
+      weight: 10, // Border weight
+      fillOpacity: 0 // Fill opacity
+    },
+    interactive: false // Disable interactivity
+  }).addTo(map);
+})();
+
+// Function to update the info box with the gridcode
+function updateInfoBox(gridcode) { // Function to update the info box with the gridcode
+  var infoBox = document.getElementById('info-box'); // Get the info box element
+  if (infoBox) { // If the info box element exists
+    infoBox.innerHTML = `Gridcode: ${gridcode}`; // Update the content with the gridcode
+    infoBox.style.backgroundColor = getColor(gridcode); // Update the background color based on the gridcode
+    infoBox.style.display = 'block'; // Display the info box
   }
 }
 
-function clearInfoBox() {
-  var infoBox = document.getElementById('info-box');
-  var scoreElement = document.getElementById('score');
-  
-  if (infoBox && scoreElement) {
-    scoreElement.textContent = '-';
-    infoBox.style.backgroundColor = 'white';
+// Function to clear the info box
+function clearInfoBox() {  // Function to clear the info box
+  var infoBox = document.getElementById('info-box'); // Get the info box element
+  if (infoBox) { // If the info box element exists
+    infoBox.innerHTML = 'Hover over a raster cell'; // Update the content
+    infoBox.style.backgroundColor = 'white'; // Reset the background color
   }
 }
 
+// Custom control for returning to the main extent
+class ReturnToExtentControl extends L.Control { // Custom control for returning to the main extent
+  constructor(options = {}) { // Constructor with default options
+    super(options); // Call the super constructor
+  }
+
+  // Method to add the control to the map
+  onAdd(map) { 
+    var container = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom'); // Create a button element
+    container.innerHTML = 'Return to Main Extent'; // Set the button text
+    container.style.backgroundColor = 'white'; // Set the background color
+    container.style.width = 'auto'; // Set the width
+    container.style.height = 'auto'; // Set the height
+    container.style.padding = '5px'; // Set the padding
+    container.style.fontSize = '12px'; // Set the font size
+    container.style.cursor = 'pointer'; // Set the cursor to pointer
+    L.DomEvent.disableClickPropagation(container); // Disable click propagation
+    L.DomEvent.on(container, 'click', () => { // Add a click event listener
+      map.setView([41.7647, -72.6828], 10); // Return to the main extent
+    });
+    return container; // Return the container
+  }
+}
+
+// ReturnToExtentControl is added to the map
+map.addControl(new ReturnToExtentControl({ position: 'topleft' })); // Add the custom control to the map
+
+// Legend control is added to the map
 L.control.Legend ({
   position: "bottomleft",
   legends: [{
@@ -260,45 +227,3 @@ L.control.Legend ({
   },
   ]
 }).addTo(map);
-
-// Add the layer control to the map, including both base layers and overlay layers
-L.control.layers(baseLayers, overlayLayers, {collapsed: false}).addTo(map);
-
-// Define the main extent of the map
-var mainExtent = {
-  lat: 41.7647,
-  lng: -72.6828,
-  zoom: 10
-};
-
-// Create a custom control for returning to the main extent
-L.Control.ReturnToExtent = L.Control.extend({
-  options: {
-    position: 'topleft', // Position of the control
-  },
-
-  onAdd: function (map) {
-    // Create a button element
-    var container = L.DomUtil.create('button', 'leaflet-bar leaflet-control leaflet-control-custom');
-    container.innerHTML = 'Return to Main Extent'; // Text on the button
-    container.style.backgroundColor = 'white';    
-    container.style.width = 'auto';
-    container.style.height = 'auto';
-    container.style.padding = '5px';
-    container.style.fontSize = '12px';
-    container.style.cursor = 'pointer';
-
-    // Prevent map clicks when clicking the control
-    L.DomEvent.disableClickPropagation(container);
-
-    // Set the map view to the main extent when the button is clicked
-    L.DomEvent.on(container, 'click', function() {
-      map.setView([mainExtent.lat, mainExtent.lng], mainExtent.zoom);
-    });
-
-    return container;
-  }
-});
-
-// Add the custom control to the map
-map.addControl(new L.Control.ReturnToExtent());
