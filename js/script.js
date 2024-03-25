@@ -1,4 +1,5 @@
 /**
+ * Project: ParSuit WebViewer - A Web Mapping Application for Parcel Suitability Analysis
  * File Name: script.js
  * Description: This script initializes and configures a Leaflet map for displaying various 
  * geographic data layers, including schools, hospitals, police stations, and brownfields. 
