@@ -1,3 +1,15 @@
+/**
+ * File Name: script.js
+ * Description: This script initializes and configures a Leaflet map for displaying various 
+ * geographic data layers, including schools, hospitals, police stations, and brownfields. 
+ * It dynamically adds geoJSON layers, implements custom controls, and manages layer visibility 
+ * based on zoom levels. Features include a custom legend, pane management for layer stacking, 
+ * and interactive popups for detailed information.
+ * 
+ * Author: Dominic C
+ */
+
+
 // Set up the map
 var map = L.map('map').setView([41.7647, -72.6828], 10);
 
