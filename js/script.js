@@ -240,3 +240,10 @@ L.control.Legend ({
   },
   ]
 }).addTo(map);
+
+function sendHeartbeat() {
+  fetch("/heartbeat").catch(() => console.log("Server not available"));
+}
+
+// Send a heartbeat every 5 seconds
+setInterval(sendHeartbeat, 5000);
