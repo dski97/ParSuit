@@ -1,4 +1,4 @@
-# Name: WeightedOverlay_Custom.py
+# Name: WeightedOverlayScript.py
 # Description: Overlays several rasters using a common scale and weighing
 #              each according to its importance.
 # Requirements: Spatial Analyst Extension

@@ -30,6 +30,7 @@ class ParSuitApp:
         self.root = root
         self.root.title("ParSuit")
         self.sliders = []
+        self.slider_values = []
         self.setup_ui()
         self.center_window()
 
@@ -256,10 +257,17 @@ class ParSuitApp:
 
         threading.Thread(target=self.run_weighted_overlay).start()
 
+        self.slider_values = self.get_slider_values()  # Store the slider values
+        threading.Thread(target=self.run_weighted_overlay).start()
+
+    def get_slider_values(self):
+        return [slider.get() for slider in self.sliders]
+
+
     def run_weighted_overlay(self):
-        # Simulate a long-running task
-        # Replace this with your actual function to perform the weighted overlay
-        # time.sleep(5) or any long-running task
+       # Save slider values to a file
+        with open("slider_values.txt", "w") as file:
+            file.write(",".join(str(value) for value in self.slider_values)) 
 
         # After completing the task, enable the OK button
         self.process_completed_button.config(state='normal')
