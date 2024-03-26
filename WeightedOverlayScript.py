@@ -7,25 +7,37 @@
 import arcpy
 from arcpy import env
 from arcpy.sa import *
+import shutil
+import os
+
+# Set the base directory for input files
+input_base_dir = r"C:\Users\Dominic\Desktop\ParSuitAPRX"
+
+# Set the output directory for the final GeoJSON file
+output_base_dir = r"C:\Users\Dominic\Desktop\ParSuit\data"
+
+#Slider directory
+slider_dir = r"C:\Users\Dominic\Desktop\ParSuit"
 
 # Set environment settings
 arcpy.env.cellSize = 150
-arcpy.env.scratchWorkspace = r"C:\Users\Dominic\Desktop\ParSuitAPRX"
+arcpy.env.scratchWorkspace = input_base_dir
 arcpy.env.overwriteOutput = True
 
 # Set local variables
-inRaster1 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Brownfield.tif"
-inRaster2 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_BuildableSoil.tif"
-inRaster3 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Floodzones.tif"
-inRaster4 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Hospitals.tif"
-inRaster5 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_PoliceCommunity.tif"
-inRaster6 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Roads.tif"
-inRaster7 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Schools.tif"
-inRaster8 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_SewerCon.tif"
-inRaster9 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Slope.tif"
-inRaster10 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\Reclass_Wetlands.tif"
-inRaster11 = r"C:\Users\Dominic\Desktop\ParSuitAPRX\landuse.gdb\landuse"
+inRaster1 = os.path.join(input_base_dir, "Reclass_Brownfield.tif")
+inRaster2 = os.path.join(input_base_dir, "Reclass_BuildableSoil.tif")
+inRaster3 = os.path.join(input_base_dir, "Reclass_Floodzones.tif")
+inRaster4 = os.path.join(input_base_dir, "Reclass_Hospitals.tif")
+inRaster5 = os.path.join(input_base_dir, "Reclass_PoliceCommunity.tif")
+inRaster6 = os.path.join(input_base_dir, "Reclass_Roads.tif")
+inRaster7 = os.path.join(input_base_dir, "Reclass_Schools.tif")
+inRaster8 = os.path.join(input_base_dir, "Reclass_SewerCon.tif")
+inRaster9 = os.path.join(input_base_dir, "Reclass_Slope.tif")
+inRaster10 = os.path.join(input_base_dir, "Reclass_Wetlands.tif")
+inRaster11 = os.path.join(input_base_dir, "landuse.gdb", "landuse")
 
+# Remap values (unchanged)
 remapBrownfield = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapBuildableSoil = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapFloodzones = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
@@ -56,36 +68,51 @@ remapLanduse = RemapValue([
         ["NODATA", "NODATA"]
     ])
 
+# Read slider values from the file
+slider_values_path = os.path.join(slider_dir, "slider_values.txt")
+with open(slider_values_path, "r") as file:
+    slider_values = [int(value) for value in file.read().split(",")]
+
+# Update the weights in the WOTable based on the slider values
 myWOTable = WOTable([
-    [inRaster1, 9, "VALUE", remapBrownfield],
-    [inRaster2, 9, "VALUE", remapBuildableSoil],
-    [inRaster3, 9, "VALUE", remapFloodzones],
-    [inRaster4, 9, "VALUE", remapHospitals],
-    [inRaster5, 9, "VALUE", remapPoliceCommunity],
-    [inRaster6, 9, "VALUE", remapRoads],
-    [inRaster7, 9, "VALUE", remapSchools],
-    [inRaster8, 9, "VALUE", remapSewerCon],
-    [inRaster9, 9, "VALUE", remapSlope],
-    [inRaster10, 9, "VALUE", remapWetlands],
-    [inRaster11, 10, "VALUE", remapLanduse]
+    [inRaster1, slider_values[0], "VALUE", remapBrownfield],
+    [inRaster2, slider_values[1], "VALUE", remapBuildableSoil],
+    [inRaster3, slider_values[2], "VALUE", remapFloodzones],
+    [inRaster4, slider_values[3], "VALUE", remapHospitals],
+    [inRaster5, slider_values[4], "VALUE", remapPoliceCommunity],
+    [inRaster6, slider_values[5], "VALUE", remapRoads],
+    [inRaster7, slider_values[6], "VALUE", remapSchools],
+    [inRaster8, slider_values[7], "VALUE", remapSewerCon],
+    [inRaster9, slider_values[8], "VALUE", remapSlope],
+    [inRaster10, slider_values[9], "VALUE", remapWetlands],
+    [inRaster11, slider_values[10], "VALUE", remapLanduse]
 ], [1, 10, 1])
 
 # Execute WeightedOverlay
 outWeightedOverlay = WeightedOverlay(myWOTable)
 
 # Save the output
-outWeightedOverlay.save(r"C:\Users\Dominic\Desktop\ParSuitAPRX\output.tif")
+output_path = os.path.join(input_base_dir, "output.tif")
+outWeightedOverlay.save(output_path)
 
 print("Weighted Overlay completed successfully!")
 
-#Convert output raster to polygon
-arcpy.RasterToPolygon_conversion(outWeightedOverlay, r"C:\Users\Dominic\Desktop\ParSuitAPRX\raster_polygon.shp", "NO_SIMPLIFY", "VALUE")
+# Convert output raster to polygon
+raster_polygon_path = os.path.join(input_base_dir, "raster_polygon.shp")
+arcpy.RasterToPolygon_conversion(outWeightedOverlay, raster_polygon_path, "NO_SIMPLIFY", "VALUE")
 print("Raster to Polygon completed successfully!")
 
-#Dissolve output polygon based on the gridcode field
-arcpy.Dissolve_management(r"C:\Users\Dominic\Desktop\ParSuitAPRX\raster_polygon.shp", r"C:\Users\Dominic\Desktop\ParSuitAPRX\dissolved_polygon.shp", "gridcode", "", "MULTI_PART")
+# Dissolve output polygon based on the gridcode field
+dissolved_polygon_path = os.path.join(input_base_dir, "dissolved_polygon.shp")
+arcpy.Dissolve_management(raster_polygon_path, dissolved_polygon_path, "gridcode", "", "MULTI_PART")
 print("Dissolve completed successfully!")
 
-#Convert disolved polygon to geojson
-arcpy.FeaturesToJSON_conversion(r"C:\Users\Dominic\Desktop\ParSuitAPRX\dissolved_polygon.shp", r"C:\Users\Dominic\Desktop\ParSuitAPRX\WeightedOverlay.geojson", "FORMATTED", "NO_Z_VALUES", "NO_M_VALUES", "GEOJSON", "WGS84", "USE_FIELD_NAME")
+# Convert dissolved polygon to geojson
+geojson_path = os.path.join(input_base_dir, "WeightedOverlay.geojson")
+arcpy.FeaturesToJSON_conversion(dissolved_polygon_path, geojson_path, "FORMATTED", "NO_Z_VALUES", "NO_M_VALUES", "GEOJSON", "WGS84", "USE_FIELD_NAME")
 print("Conversion to GeoJSON completed successfully!")
+
+# Move the geojson file to the ParSuit Data folder and rename it to RasterOverlay.geojson
+final_geojson_path = os.path.join(output_base_dir, "RasterOverlay.geojson")
+shutil.move(geojson_path, final_geojson_path, copy_function=shutil.copy2)
+print("GeoJSON file moved successfully!")

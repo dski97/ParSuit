@@ -73,7 +73,7 @@ class ParSuitApp:
 
     def load_and_display_image(self):
         image = Image.open(Configuration.IMAGE_PATH)
-        resized_image = image.resize((650, 500), Image.ANTIALIAS)
+        resized_image = image.resize((650, 500), Image.LANCZOS)
         photo = ImageTk.PhotoImage(resized_image)
         image_label = tk.Label(self.scrollable_frame, image=photo)
         image_label.image = photo
