@@ -1,30 +1,23 @@
+import os
 import webbrowser
 from http.server import SimpleHTTPRequestHandler, HTTPServer
-import threading
-import time
 
-class MyHandler(SimpleHTTPRequestHandler):
-    last_heartbeat = time.time()
-    
-    def do_GET(self):
-        if self.path == '/heartbeat':
-            self.send_response(200)
-            self.end_headers()
-            MyHandler.last_heartbeat = time.time()
-        else:
-            super().do_GET()
+# Get the current directory
+current_dir = os.path.dirname(os.path.abspath(__file__))
 
-    @classmethod
-    def check_heartbeat(cls):
-        while True:
-            time.sleep(10)  # Check every 10 seconds
-            if time.time() - cls.last_heartbeat > 15:  # 15 seconds without heartbeat
-                print("No heartbeat detected, shutting down.")
-                server.shutdown()
-                break
-
+# Set the port number for the web server
 port = 8000
-server = HTTPServer(('', port), MyHandler)
-threading.Thread(target=MyHandler.check_heartbeat).start()
-webbrowser.open_new_tab(f'http://localhost:{port}/index.html')
-server.serve_forever()
+
+# Change the working directory to the current directory
+os.chdir(current_dir)
+
+# Start the web server
+server_address = ('', port)
+httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+print(f"Server running on http://localhost:{port}")
+
+# Open index.html in the default web browser
+webbrowser.open_new_tab(f"http://localhost:{port}/index.html")
+
+# Serve requests indefinitely
+httpd.serve_forever()

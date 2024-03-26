@@ -3,6 +3,8 @@ from tkinter import ttk
 from tkinter.font import Font
 from PIL import Image, ImageTk
 import threading
+import subprocess
+import os
 
 class Configuration:
     SLIDER_NAMES = [
@@ -259,15 +261,24 @@ class ParSuitApp:
 
         self.slider_values = self.get_slider_values()  # Store the slider values
         threading.Thread(target=self.run_weighted_overlay).start()
-
+    
     def get_slider_values(self):
         return [slider.get() for slider in self.sliders]
 
-
     def run_weighted_overlay(self):
+
        # Save slider values to a file
         with open("slider_values.txt", "w") as file:
-            file.write(",".join(str(value) for value in self.slider_values)) 
+            file.write(",".join(str(value) for value in self.slider_values))
+
+        # Call the external Python script here
+        try:
+            # Adjust the path to the script as necessary
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            subprocess.run(["python", "WeightedOverlayScript.py"], cwd=script_dir, check=True)
+        except subprocess.CalledProcessError as e:
+            print("An error occurred while executing WeightedOverlayScript.py")
+        # Handle the error or notify the user as necessary
 
         # After completing the task, enable the OK button
         self.process_completed_button.config(state='normal')

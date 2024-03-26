@@ -10,6 +10,8 @@ from arcpy.sa import *
 import shutil
 import os
 
+
+
 # Set the base directory for input files
 input_base_dir = r"C:\Users\Dominic\Desktop\ParSuitAPRX"
 
@@ -46,7 +48,7 @@ remapPoliceCommunity = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,
 remapRoads = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapSchools = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapSewerCon = RemapValue([[1,1],[2,1],[3,1],[4,1],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
-remapSlope = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
+remapSlope = RemapValue([[1,1],[2,1],[3,1],[4,3],[5,3],[6,5],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapWetlands = RemapValue([[1,1],[2,2],[3,3],[4,4],[5,5],[6,6],[7,7],[8,8],[9,9],[10,10],["NODATA","NODATA"]])
 remapLanduse = RemapValue([
         [0, "NODATA"],
@@ -91,8 +93,11 @@ myWOTable = WOTable([
 # Execute WeightedOverlay
 outWeightedOverlay = WeightedOverlay(myWOTable)
 
+
+
 # Save the output
 output_path = os.path.join(input_base_dir, "output.tif")
+
 outWeightedOverlay.save(output_path)
 
 print("Weighted Overlay completed successfully!")
