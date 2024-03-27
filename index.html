@@ -1,62 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ParSuit Web Application</title>
-  <!-- Leaflet CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
-  <!-- Leaflet Geocoder CSS -->
-  <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
-  <!-- Custom CSS -->
-  <link rel="stylesheet" href="css/styles.css" />
-  <!-- Github Markdown-->
-  <link rel="stylesheet" href="css/github-markdown.css">
-  <!-- Leaflet Legend CSS -->
-  <link rel="stylesheet" href="src/leaflet.legend.css">
-  <!-- Favicon -->
-  <link rel="icon" type="image/png" href="icons/box.png" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ParSuit Web Application</title>
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <!-- Leaflet Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/styles.css" />
+    <!-- Github Markdown-->
+    <link rel="stylesheet" href="css/github-markdown.css">
+    <!-- Leaflet Legend CSS -->
+    <link rel="stylesheet" href="src/leaflet.legend.css">
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="icons/box.png" />
 </head>
+
 <body>
-  <div id="map">
-    <div class="map-title">ParSuit WebViewer</div>
-  </div>
-  <!-- Legend -->
-  <div class="legend">
-    <div class="legend-title">Suitability</div>
-    <div class="legend-scale">
-      <ul class="legend-labels">
-        <li><span style="background-color: hsl(0, 100%, 50%);"></span>0</li>
-        <li><span style="background-color: hsl(12, 100%, 50%);"></span>1</li>
-        <li><span style="background-color: hsl(24, 100%, 50%);"></span>2</li>
-        <li><span style="background-color: hsl(36, 100%, 50%);"></span>3</li>
-        <li><span style="background-color: hsl(48, 100%, 50%);"></span>4</li>
-        <li><span style="background-color: hsl(60, 100%, 50%);"></span>5</li>
-        <li><span style="background-color: hsl(72, 100%, 50%);"></span>6</li>
-        <li><span style="background-color: hsl(84, 100%, 50%);"></span>7</li>
-        <li><span style="background-color: hsl(96, 100%, 50%);"></span>8</li>
-        <li><span style="background-color: hsl(108, 100%, 50%);"></span>9</li>
-        <li><span style="background-color: hsl(120, 100%, 50%);"></span>10</li>
-      </ul>
+    <div id="map">
+        <div class="map-title">ParSuit WebViewer</div>
     </div>
-  </div>
-  <div id="customLegend" class="custom-legend">
-    <!-- Legend items will be added here dynamically -->
-  </div>
-  <div id="info-box" class="info-box">
-    Suitability Score: <span id="score">-</span>
-  </div>
-  <!-- Leaflet JS -->
-  <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-  <!-- Esri Leaflet JS -->
-  <script src="https://unpkg.com/esri-leaflet@3.0.4/dist/esri-leaflet.js"></script>
-  <!-- Leaflet Legend JS -->
-  <script src="src/leaflet.legend.js"></script>
-  <!-- Leaflet Geocoder JS -->
-  <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
-  <!-- Leaflet Search JS -->
-  <script src="https://unpkg.com/leaflet-search@3.0.2/src/leaflet-search.js"></script>
-  <!-- Custom JS -->
-  <script src="js/script.js"></script>
+    <!-- Legend -->
+    <div class="legend">
+        <div class="legend-title">Suitability</div>
+        <div class="legend-scale">
+            <ul class="legend-labels">
+                <li><span style="background-color: hsl(0, 100%, 50%);"></span>0</li>
+                <li><span style="background-color: hsl(12, 100%, 50%);"></span>1</li>
+                <li><span style="background-color: hsl(24, 100%, 50%);"></span>2</li>
+                <li><span style="background-color: hsl(36, 100%, 50%);"></span>3</li>
+                <li><span style="background-color: hsl(48, 100%, 50%);"></span>4</li>
+                <li><span style="background-color: hsl(60, 100%, 50%);"></span>5</li>
+                <li><span style="background-color: hsl(72, 100%, 50%);"></span>6</li>
+                <li><span style="background-color: hsl(84, 100%, 50%);"></span>7</li>
+                <li><span style="background-color: hsl(96, 100%, 50%);"></span>8</li>
+                <li><span style="background-color: hsl(108, 100%, 50%);"></span>9</li>
+                <li><span style="background-color: hsl(120, 100%, 50%);"></span>10</li>
+            </ul>
+        </div>
+    </div>
+    <div id="customLegend" class="custom-legend">
+        <!-- Legend items will be added here dynamically -->
+    </div>
+    <div id="info-box" class="info-box">
+        Suitability Score: <span id="score">-</span>
+    </div>
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <!-- Esri Leaflet JS -->
+    <script src="https://unpkg.com/esri-leaflet@3.0.4/dist/esri-leaflet.js"></script>
+    <!-- Leaflet Legend JS -->
+    <script src="src/leaflet.legend.js"></script>
+    <!-- Leaflet Geocoder JS -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+    <!-- Leaflet Search JS -->
+    <script src="https://unpkg.com/leaflet-search@3.0.2/src/leaflet-search.js"></script>
+    <!-- Custom JS -->
+    <script src="js/script.js"></script>
 </body>
+
 </html>

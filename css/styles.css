@@ -1,182 +1,273 @@
 :root {
-	--primary-color: #f5f5f5; /* Primary color */
-	--secondary-color: #030303; /* Secondary color */
-	--highlight-color: #c90303; /* Highlight color */
-	--border-color: #050505; /* Border color */
-	--border-radius: 4px; /* Border radius */
-	--font-family: Arial, sans-serif; /* Font family */
+    --primary-color: #f5f5f5;
+    /* Primary color */
+    --secondary-color: #030303;
+    /* Secondary color */
+    --highlight-color: #c90303;
+    /* Highlight color */
+    --border-color: #050505;
+    /* Border color */
+    --border-radius: 4px;
+    /* Border radius */
+    --font-family: Arial, sans-serif;
+    /* Font family */
 }
 
 
 #map {
-	height: 99vh; /* Map height */
+    height: 99vh;
+    /* Map height */
 }
 
-.legend, .info-box {
-	font-family: var(--font-family); /* Font family */
-	padding: 10px; /* Padding */
-	background-color: var(--primary-color); /* Background color */
-	border: 1px solid var(--border-color); /* Border */
-	border-radius: var(--border-radius); /* Border radius */
-	position: absolute; /* Position */
-	z-index: 1000; /* Z-index */
+.legend,
+.info-box {
+    font-family: var(--font-family);
+    /* Font family */
+    padding: 10px;
+    /* Padding */
+    background-color: var(--primary-color);
+    /* Background color */
+    border: 1px solid var(--border-color);
+    /* Border */
+    border-radius: var(--border-radius);
+    /* Border radius */
+    position: absolute;
+    /* Position */
+    z-index: 1000;
+    /* Z-index */
 }
 
 .legend {
-	bottom: 20px; /* Bottom position */
-	right: 20px; /* Right position */
+    bottom: 20px;
+    /* Bottom position */
+    right: 20px;
+    /* Right position */
 }
 
 .info-box {
-	bottom: 350px; /* Bottom position */
-	right: 10px; /* Right position */
-	color: var(--secondary-color); /* Text color */
-	font-weight: bold; /* Font weight */
-	text-shadow: 1px 1px 2px rgba(110, 109, 109, 0.3); /* Text shadow */
+    bottom: 350px;
+    /* Bottom position */
+    right: 10px;
+    /* Right position */
+    color: var(--secondary-color);
+    /* Text color */
+    font-weight: bold;
+    /* Font weight */
+    text-shadow: 1px 1px 2px rgba(110, 109, 109, 0.3);
+    /* Text shadow */
 }
 
-.legend-title, .map-title {
-	font-weight: bold; /* Font weight */
+.legend-title,
+.map-title {
+    font-weight: bold;
+    /* Font weight */
 }
 
-.legend-scale ul, .leaflet-control-search .search-tooltip {
-	list-style: none; /* List style */
-	margin: 0; /* Margin */
-	padding: 0; /* Padding */
+.legend-scale ul,
+.leaflet-control-search .search-tooltip {
+    list-style: none;
+    /* List style */
+    margin: 0;
+    /* Margin */
+    padding: 0;
+    /* Padding */
 }
 
-.legend-scale li, .leaflet-control-search .search-tip {
-	display: flex; /* Display */
-	align-items: center; /* Align items */
-	margin-bottom: 5px; /* Margin bottom */
-	background-color: #eee; /* Background color */
+.legend-scale li,
+.leaflet-control-search .search-tip {
+    display: flex;
+    /* Display */
+    align-items: center;
+    /* Align items */
+    margin-bottom: 5px;
+    /* Margin bottom */
+    background-color: #eee;
+    /* Background color */
 }
 
 .legend-scale li span {
-	width: 20px; /* Width */
-	height: 20px; /* Height */
-	margin-right: 5px; /* Margin right */
-	display: inline-block; /* Display */
+    width: 20px;
+    /* Width */
+    height: 20px;
+    /* Height */
+    margin-right: 5px;
+    /* Margin right */
+    display: inline-block;
+    /* Display */
 }
 
 /* Leaflet Search Control Styling */
 .leaflet-container .leaflet-control-search,
 .leaflet-control-search.search-exp {
-	position: relative; /* Position */
-	background-color: rgba(255, 255, 255, 0.8); /* Background color */
-	border: 2px solid rgba(0,0,0,0.2); /* Border */
-	border-radius: var(--border-radius); /* Border radius */
-	margin-left: 10px; /* Margin left */
-	margin-top: 10px; /* Margin top */
+    position: relative;
+    /* Position */
+    background-color: rgba(255, 255, 255, 0.8);
+    /* Background color */
+    border: 2px solid rgba(0, 0, 0, 0.2);
+    /* Border */
+    border-radius: var(--border-radius);
+    /* Border radius */
+    margin-left: 10px;
+    /* Margin left */
+    margin-top: 10px;
+    /* Margin top */
 }
 
 .leaflet-control-search .search-input {
-	background: #080404; /* Background color */
-	border: 1px solid #666; /* Border */
-	border-radius: 2px; /* Border radius */
-	height: 22px; /* Height */
-	padding: 0 20px 0 2px; /* Padding */
-	margin: 4px 0 4px 4px; /* Margin */
+    background: #080404;
+    /* Background color */
+    border: 1px solid #666;
+    /* Border */
+    border-radius: 2px;
+    /* Border radius */
+    height: 22px;
+    /* Height */
+    padding: 0 20px 0 2px;
+    /* Padding */
+    margin: 4px 0 4px 4px;
+    /* Margin */
 }
 
 .leaflet-control-search.search-load .search-input {
-	background: url('../images/loader.gif') no-repeat center right #fff; /* Background image */
+    background: url('../images/loader.gif') no-repeat center right #fff;
+    /* Background image */
 }
 
 .leaflet-control-search .search-cancel,
 .leaflet-control-search .search-button {
-	position: absolute; /* Position */
-	right: 28px; /* Right position */
-	margin: 6px 0; /* Margin */
+    position: absolute;
+    /* Position */
+    right: 28px;
+    /* Right position */
+    margin: 6px 0;
+    /* Margin */
 }
 
 .leaflet-control-search .search-button {
-	background: url('../images/search-icon.png') no-repeat 4px 4px #fff; /* Background image */
-	border-radius: 4px; /* Border radius */
+    background: url('../images/search-icon.png') no-repeat 4px 4px #fff;
+    /* Background image */
+    border-radius: 4px;
+    /* Border radius */
 }
 
 .leaflet-control-search .search-button:hover {
-	background-color: var(--highlight-color); /* Background color */
+    background-color: var(--highlight-color);
+    /* Background color */
 }
 
 .leaflet-control-search .search-tooltip {
-	top: 100%; /* Top position */
-	box-shadow: 1px 1px 6px rgba(0,0,0,0.4); /* Box shadow */
-	background-color: rgba(0, 0, 0, 0.25); /* Background color */
-	overflow-y: auto; /* Overflow */
-	cursor: pointer; /* Cursor */
+    top: 100%;
+    /* Top position */
+    box-shadow: 1px 1px 6px rgba(0, 0, 0, 0.4);
+    /* Box shadow */
+    background-color: rgba(0, 0, 0, 0.25);
+    /* Background color */
+    overflow-y: auto;
+    /* Overflow */
+    cursor: pointer;
+    /* Cursor */
 }
 
 .leaflet-control-search .search-tip,
 .leaflet-control-search .search-tip-select,
 .leaflet-control-search .search-tip:hover {
-	background-color: var(--highlight-color); /* Background color */
+    background-color: var(--highlight-color);
+    /* Background color */
 }
 
 .leaflet-control-search .search-alert {
-	color: var(--highlight-color); /* Text color */
+    color: var(--highlight-color);
+    /* Text color */
 }
 
-.map-title { 
-	position: absolute; /* Position */
-	top: 10px; /* Top position */
-	left: 50%; /* Left position */
-	transform: translateX(-50%); /* Transform */
-	background-color: rgba(255, 255, 255, 0.75); /* Background color */
-	padding: 5px; /* Padding */
-	z-index: 1000; /* Z-index */
-	border-radius: 5px; /* Border radius */
-	font-size: 20px; /* Font size */
-	font-weight: bold; /* Font weight */
+.map-title {
+    position: absolute;
+    /* Position */
+    top: 10px;
+    /* Top position */
+    left: 50%;
+    /* Left position */
+    transform: translateX(-50%);
+    /* Transform */
+    background-color: rgba(255, 255, 255, 0.75);
+    /* Background color */
+    padding: 5px;
+    /* Padding */
+    z-index: 1000;
+    /* Z-index */
+    border-radius: 5px;
+    /* Border radius */
+    font-size: 20px;
+    /* Font size */
+    font-weight: bold;
+    /* Font weight */
 }
 
 .custom-legend {
-	position: absolute;
-	z-index: 1000; /* Ensure it sits above the map */
-	left: 20px; /* Adjust for spacing from the left edge */
-	top: 50%; /* Center vertically */
-	transform: translateY(-50%); /* Adjust to precisely center it */
-	background-color: var(--primary-color); /* Use primary color variable */
-	padding: 10px;
-	border: 1px solid var(--border-color); /* Use border color variable */
-	border-radius: var(--border-radius); /* Use border radius variable */
-	box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-	font-family: var(--font-family); /* Use font family variable */
-	color: var(--secondary-color); /* Use secondary color variable */
-	font-size: 14px;
-  }
-  
-  .legend-item {
-	margin-bottom: 5px;
-	color: var(--secondary-color); /* Ensure text color consistency */
-  }
-  
-  /* Additional styling to integrate the legend title consistently */
-  .custom-legend h4 {
-	font-weight: bold;
-	margin-top: 0;
-	color: #000; /* Use highlight color for the title */
-	font-size: 18px ;
-  }
-  
-  /* Ensure list and item markers are consistent */
-  .custom-legend ul {
-	list-style: none; /* Remove default list style */
-	padding: 0; /* Remove default padding */
-	margin: 0; /* Remove default margin */
-  }
-  
-  .custom-legend li {
-	display: flex; /* Use flexbox for alignment */
-	align-items: center; /* Center items vertically */
-	margin-bottom: 5px; /* Consistent spacing */
-  }
-  
-  .custom-legend li span {
-	display: inline-block;
-	margin-right: 5px; /* Spacing between marker and text */
-  }
+    position: absolute;
+    z-index: 1000;
+    /* Ensure it sits above the map */
+    left: 20px;
+    /* Adjust for spacing from the left edge */
+    top: 50%;
+    /* Center vertically */
+    transform: translateY(-50%);
+    /* Adjust to precisely center it */
+    background-color: var(--primary-color);
+    /* Use primary color variable */
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    /* Use border color variable */
+    border-radius: var(--border-radius);
+    /* Use border radius variable */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    font-family: var(--font-family);
+    /* Use font family variable */
+    color: var(--secondary-color);
+    /* Use secondary color variable */
+    font-size: 14px;
+}
 
-  .custom-legend .bold-term {
-	font-weight: bold;
-  }
+.legend-item {
+    margin-bottom: 5px;
+    color: var(--secondary-color);
+    /* Ensure text color consistency */
+}
+
+/* Additional styling to integrate the legend title consistently */
+.custom-legend h4 {
+    font-weight: bold;
+    margin-top: 0;
+    color: #000;
+    /* Use highlight color for the title */
+    font-size: 18px;
+}
+
+/* Ensure list and item markers are consistent */
+.custom-legend ul {
+    list-style: none;
+    /* Remove default list style */
+    padding: 0;
+    /* Remove default padding */
+    margin: 0;
+    /* Remove default margin */
+}
+
+.custom-legend li {
+    display: flex;
+    /* Use flexbox for alignment */
+    align-items: center;
+    /* Center items vertically */
+    margin-bottom: 5px;
+    /* Consistent spacing */
+}
+
+.custom-legend li span {
+    display: inline-block;
+    margin-right: 5px;
+    /* Spacing between marker and text */
+}
+
+.custom-legend .bold-term {
+    font-weight: bold;
+}
