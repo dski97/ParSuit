@@ -80,22 +80,33 @@ class ParSuitApp:
 
     # Method to start the server
     def start_server(self):
-        # Get the current directory
+
+        # Change the current directory to the script directory
         current_dir = os.path.dirname(os.path.abspath(__file__))
 
-        # Set the port number for the web server
-        self.port = 8000
-
-        # Change the working directory to the current directory
+        # Start the server in the script directory
         os.chdir(current_dir)
 
-        # Start the web server
+        # Start the server on port 8000
+        self.port = 8000
+
+        # Create the server
         server_address = ("", self.port)
+
+        # Create the HTTP server
         self.httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
-        print(f"Server running on http://localhost:{self.port}")
 
         # Start the server in a separate thread
-        threading.Thread(target=self.httpd.serve_forever).start()
+        print(f"Server running on http://localhost:{self.port}")
+
+        # Create a thread for the server
+        self.server_thread = threading.Thread(target=self.httpd.serve_forever)
+
+        # Set the thread as a daemon
+        self.server_thread.daemon = True
+
+        # Start the server thread
+        self.server_thread.start()
 
     # Method to create the title
     def create_title(self):
@@ -525,11 +536,14 @@ class ParSuitApp:
 
         # Shutdown the server
         self.httpd.shutdown()
-        print("Server stopped")
-        self.root.quit()
 
-        # Destroy the root window
+        # Join the server thread
+        self.server_thread.join()
+
+        # Quit and destroy the Tkinter application
+        self.root.quit() 
         self.root.destroy()
+        print("Server stopped successfully")
 
     # Method to refresh the page
     def refresh_page(self):
