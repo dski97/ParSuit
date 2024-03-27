@@ -8,6 +8,7 @@ import os
 import webbrowser
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 
+#Configuration class to store the constants
 class Configuration:
     SLIDER_NAMES = [
         'Away from Brownfields', 'Buildable Soil', 'Away from Floodzones',
@@ -29,6 +30,7 @@ class Configuration:
     }
     NUM_SLIDERS = len(SLIDER_NAMES)
 
+#Main class for the ParSuit application
 class ParSuitApp:
     def __init__(self, root):
         self.root = root
@@ -54,7 +56,6 @@ class ParSuitApp:
         self.create_glossary()
         self.update_scroll()
         self.create_processing_button()
-
         self.root.bind_all("<MouseWheel>", self.on_mousewheel)
         self.root.bind("<Configure>", self.on_window_resize)
 
@@ -86,10 +87,8 @@ class ParSuitApp:
         self.canvas = tk.Canvas(container)
         self.scrollbar = ttk.Scrollbar(container, orient="vertical", command=self.canvas.yview)
         self.scrollable_frame = ttk.Frame(self.canvas)
-
         self.scrollable_frame.bind("<Configure>", lambda event: self.canvas.configure(scrollregion=self.canvas.bbox("all")))
         self.scrollable_frame_window_id = self.canvas.create_window((0, 0), window=self.scrollable_frame, anchor='nw')
-
         self.canvas.configure(yscrollcommand=self.scrollbar.set)
         self.canvas.grid(row=0, column=0, sticky='nsew')
         self.scrollbar.grid(row=0, column=1, sticky='ns')
@@ -120,12 +119,8 @@ class ParSuitApp:
     def create_importance_key(self):
         key_frame = tk.Frame(self.scrollable_frame)
         key_frame.pack(fill='x', pady=(10, 0), expand=False)
-
-        less_important_label = tk.Label(key_frame, text="Less Important", fg="red", anchor='w', padx=120)
-        less_important_label.pack(side='left')
-
-        more_important_label = tk.Label(key_frame, text="More Important", fg="red", anchor='e')
-        more_important_label.pack(side='right')
+        tk.Label(key_frame, text="Less Important", fg="red", anchor='w', padx=120).pack(side='left')
+        tk.Label(key_frame, text="More Important", fg="red", anchor='e').pack(side='right')
 
     def create_sliders(self):
         for index, name in enumerate(Configuration.SLIDER_NAMES):
@@ -154,12 +149,7 @@ class ParSuitApp:
             total += moved_value
 
         self.total_label.config(text=f"Total: {total}/100")
-
-        # Enable or disable the process button based on the total value
-        if self.is_total_valid():
-            self.process_button.config(state='normal')
-        else:
-            self.process_button.config(state='disabled')
+        self.process_button.config(state='normal' if self.is_total_valid() else 'disabled')
 
     def on_preset_selected(self, event):
         selected_preset = self.preset_combobox.get()
@@ -178,13 +168,10 @@ class ParSuitApp:
     def create_glossary(self):
         glossary_frame = tk.Frame(self.scrollable_frame)
         glossary_frame.pack(fill='x', pady=20)
-
         glossary_title_font = Font(family="Arial", size=14, weight="bold")
         glossary_title = tk.Label(glossary_frame, text="Glossary", font=glossary_title_font)
         glossary_title.pack(side='top')
-
         term_font = Font(family="Arial", size=12, weight="bold", slant="italic")
-
         glossary_terms = {
             'Away from Brownfields': 'Indicates the degree to which the land is inclined, affecting construction and drainage.',
             'Buildable Soil': 'Refers to soil with properties conducive to agriculture or construction.',
@@ -198,17 +185,13 @@ class ParSuitApp:
             'Away from Wetlands': 'Distance from wetlands, affecting environmental impact and land use.',
             'Appropriate Land Use': 'Refers to the suitability of the land for specific purposes such as residential, commercial, or industrial.'
         }
-
         glossary_text = tk.Text(glossary_frame, wrap=tk.WORD, width=70, height=20)
         glossary_scrollbar = tk.Scrollbar(glossary_frame, command=glossary_text.yview, width=22)
         glossary_text.configure(yscrollcommand=glossary_scrollbar.set)
-
         for term, explanation in glossary_terms.items():
             glossary_text.insert(tk.END, f"{term} - ", 'term')
             glossary_text.insert(tk.END, f"{explanation}\n\n")
-
         glossary_text.tag_configure('term', font=term_font)
-
         glossary_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=20)
         glossary_scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
 
@@ -238,7 +221,6 @@ class ParSuitApp:
     def create_processing_button(self):
         button_frame = tk.Frame(self.scrollable_frame)
         button_frame.pack(fill='x', pady=20)
-
         self.process_button = tk.Button(button_frame, text="Process Weighted Overlay",
                                         command=self.process_weighted_overlay,
                                         bg='green', fg='white',
@@ -249,28 +231,21 @@ class ParSuitApp:
     def process_weighted_overlay(self):
         self.processing_window = tk.Toplevel(self.root)
         self.processing_window.title("Processing")
-
-        # Calculate the center coordinates of the main window
         main_window_width = self.root.winfo_width()
         main_window_height = self.root.winfo_height()
         main_window_x = self.root.winfo_x()
         main_window_y = self.root.winfo_y()
         center_x = main_window_x + (main_window_width // 2)
         center_y = main_window_y + (main_window_height // 2)
-
-        # Set the dimensions and position of the popup window
         popup_width = 400
         popup_height = 150
         popup_x = center_x - (popup_width // 2)
         popup_y = center_y - (popup_height // 2)
         self.processing_window.geometry(f"{popup_width}x{popup_height}+{popup_x}+{popup_y}")
-
         processing_message = tk.Label(self.processing_window, text="Script working... please be patient!")
         processing_message.pack(pady=10)
-
         button_frame = tk.Frame(self.processing_window, background='red', bd=1, relief='solid', padx=1, pady=1)
         button_frame.pack(pady=20)
-
         self.process_completed_button = tk.Button(self.processing_window, text="OK", state='disabled',
                                                 command=self.processing_window.destroy,
                                                 padx=16, pady=7,
@@ -279,36 +254,27 @@ class ParSuitApp:
                                                 activebackground='dark red', activeforeground='white',
                                                 relief='raised', borderwidth=2)
         self.process_completed_button.pack(ipadx=6, ipady=3)
-
-        self.slider_values = self.get_slider_values()  # Store the slider values
+        self.slider_values = self.get_slider_values()
         threading.Thread(target=self.run_weighted_overlay).start()
     
     def get_slider_values(self):
         return [slider.get() for slider in self.sliders]
 
     def run_weighted_overlay(self):
-        # Save slider values to a file
         with open("slider_values.txt", "w") as file:
             file.write(",".join(str(value) for value in self.slider_values))
-
-        # Call the external Python script here
         try:
-            # Adjust the path to the script as necessary
             script_dir = os.path.dirname(os.path.abspath(__file__))
             subprocess.run(["python", "WeightedOverlayScript.py"], cwd=script_dir, check=True)
         except subprocess.CalledProcessError as e:
             print("An error occurred while executing WeightedOverlayScript.py")
-            # Handle the error or notify the user as necessary
 
-        # After completing the task, enable the OK button
         self.process_completed_button.config(state='normal')
 
-         # Open index.html in the default web browser if it's not already open
         if not self.is_browser_open:
             webbrowser.open_new_tab(f"http://localhost:{self.port}/index.html")
             self.is_browser_open = True
         else:
-            # Reload the page if it's already open
             self.reload_page()
     
     def is_total_valid(self):
@@ -316,23 +282,17 @@ class ParSuitApp:
         return total == 100
     
     def stop_server(self):
-        # Stop the server
         self.httpd.shutdown()
         print("Server stopped")
-        # Close the Tkinter window
         self.root.quit()
         self.root.destroy()
 
     def refresh_page(self):
-        # Refresh the page using JavaScript
         refresh_script = f'window.open("http://localhost:{self.port}/index.html", "_self");'
         webbrowser.open(f"javascript:{refresh_script}")
     
     def reload_page(self):
-        # Reload the page in the existing browser window
         webbrowser.open(f"http://localhost:{self.port}/index.html", new=0)
-
-    
 
 if __name__ == "__main__":
     root = tk.Tk()
