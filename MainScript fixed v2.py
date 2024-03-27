@@ -5,6 +5,8 @@ from PIL import Image, ImageTk
 import threading
 import subprocess
 import os
+import webbrowser
+from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 class Configuration:
     SLIDER_NAMES = [
@@ -35,6 +37,9 @@ class ParSuitApp:
         self.slider_values = []
         self.setup_ui()
         self.center_window()
+        self.start_server()
+        self.is_browser_open = False
+        self.root.protocol("WM_DELETE_WINDOW", self.stop_server)  # Stop the server when the window is closed
 
     def setup_ui(self):
         self.root.geometry("800x800")
@@ -52,6 +57,24 @@ class ParSuitApp:
 
         self.root.bind_all("<MouseWheel>", self.on_mousewheel)
         self.root.bind("<Configure>", self.on_window_resize)
+
+    def start_server(self):
+        # Get the current directory
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Set the port number for the web server
+        self.port = 8000
+
+        # Change the working directory to the current directory
+        os.chdir(current_dir)
+
+        # Start the web server
+        server_address = ('', self.port)
+        self.httpd = HTTPServer(server_address, SimpleHTTPRequestHandler)
+        print(f"Server running on http://localhost:{self.port}")
+
+        # Start the server in a separate thread
+        threading.Thread(target=self.httpd.serve_forever).start()
 
     def create_title(self):
         title_font = Font(family="Helvetica", size=16, weight="bold")
@@ -264,8 +287,7 @@ class ParSuitApp:
         return [slider.get() for slider in self.sliders]
 
     def run_weighted_overlay(self):
-
-       # Save slider values to a file
+        # Save slider values to a file
         with open("slider_values.txt", "w") as file:
             file.write(",".join(str(value) for value in self.slider_values))
 
@@ -276,15 +298,41 @@ class ParSuitApp:
             subprocess.run(["python", "WeightedOverlayScript.py"], cwd=script_dir, check=True)
         except subprocess.CalledProcessError as e:
             print("An error occurred while executing WeightedOverlayScript.py")
-        # Handle the error or notify the user as necessary
+            # Handle the error or notify the user as necessary
 
         # After completing the task, enable the OK button
         self.process_completed_button.config(state='normal')
 
+         # Open index.html in the default web browser if it's not already open
+        if not self.is_browser_open:
+            webbrowser.open_new_tab(f"http://localhost:{self.port}/index.html")
+            self.is_browser_open = True
+        else:
+            # Reload the page if it's already open
+            self.reload_page()
     
     def is_total_valid(self):
         total = sum(slider.get() for slider in self.sliders)
         return total == 100
+    
+    def stop_server(self):
+        # Stop the server
+        self.httpd.shutdown()
+        print("Server stopped")
+        # Close the Tkinter window
+        self.root.quit()
+        self.root.destroy()
+
+    def refresh_page(self):
+        # Refresh the page using JavaScript
+        refresh_script = f'window.open("http://localhost:{self.port}/index.html", "_self");'
+        webbrowser.open(f"javascript:{refresh_script}")
+    
+    def reload_page(self):
+        # Reload the page in the existing browser window
+        webbrowser.open(f"http://localhost:{self.port}/index.html", new=0)
+
+    
 
 if __name__ == "__main__":
     root = tk.Tk()
