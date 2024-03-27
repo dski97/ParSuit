@@ -14,6 +14,69 @@
 // Set up the map
 var map = L.map('map').setView([41.7647, -72.5828], 10);
 
+//Glossary of terms
+var glossary_terms = {
+  'Away from Brownfields': 'Indicates the degree to which the land is inclined, affecting construction and drainage.',
+  'Buildable Soil': 'Refers to soil with properties conducive to agriculture or construction.',
+  'Away from Flood Zones': 'Areas less likely to experience flooding, reducing risk of water damage.',
+  'Proximity to Hospitals': 'Distance from medical facilities, affecting emergency response times.',
+  'Proximity to Police Stations': 'Distance from law enforcement, affecting crime rates and safety.',
+  'Proximity to Roads': 'Distance from roads, affecting accessibility and noise pollution.',
+  'Proximity to Schools': 'Distance from educational institutions, affecting property values and child safety.',
+  'Public Sewer': 'Availability of immediate access to public sewer systems.',
+  'Low Grade Slope': 'Indicates the degree to which the land is flat and suitable for construction.',
+  'Away from Wetlands': 'Distance from wetlands, affecting environmental impact and land use.',
+  'Appropriate Land Use': 'Refers to the suitability of the land for specific purposes such as residential, commercial, or industrial.'
+};
+
+// Variable to store the slider values
+var slider_values = [];
+
+// Function to fetch the slider values from the file
+function fetchSliderValues() {
+  // Return the fetch promise to the caller
+  return fetch('slider_values.txt')
+    .then(response => response.text())
+    .then(data => {
+      slider_values = data.split(',').map(Number);
+      updateCombinedDataLegend(); // Assuming this function handles UI update
+    })
+    .catch(error => {
+      console.error('Error fetching slider values:', error);
+    });
+}
+
+// Function to combine glossary terms and slider values
+function combineGlossaryAndSliderValues() {
+  var combinedData = Object.entries(glossary_terms).reduce((result, [key, value], index) => {
+    var term = key.split(':')[0].trim();
+    var sliderValue = slider_values[index];
+    result[term] = sliderValue;
+    return result;
+  }, {});
+  return combinedData;
+}
+
+function updateCombinedDataLegend() {
+  const combinedData = combineGlossaryAndSliderValues();
+  let legendContent = '<h4>Weights</h4>'; // Optionally add a title
+
+  for (const [term, value] of Object.entries(combinedData)) {
+    legendContent += `<div class="legend-item"><span class="bold-term">${term}:</span> ${value}</div>`;
+  }
+  
+
+  // Update the inner HTML of the custom legend
+  document.getElementById('customLegend').innerHTML = legendContent;
+}
+
+// Example of updating the legend after fetching slider values
+fetchSliderValues().then(() => {
+  console.log('Slider values updated and legend refreshed.');
+  // Any additional actions to take after updating slider values and refreshing the legend can go here
+});
+
+
 // Function to create and style panes
 function createPane(name, zIndex) {
   map.createPane(name); // Create a pane with the given name
@@ -240,10 +303,3 @@ L.control.Legend ({
   },
   ]
 }).addTo(map);
-
-function sendHeartbeat() {
-  fetch("/heartbeat").catch(() => console.log("Server not available"));
-}
-
-// Send a heartbeat every 5 seconds
-setInterval(sendHeartbeat, 5000);

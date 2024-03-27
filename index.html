@@ -1,17 +1,3 @@
-<!-- 
-  Document Name: ParSuit Web Application
-  Description: This HTML document serves as the main page for the ParSuit Web Application. It integrates various 
-  mapping technologies, including Leaflet for interactive mapping, Esri Leaflet for ArcGIS map layers, Leaflet Control 
-  Geocoder for address searching, and custom styling for map visualization. The purpose is to provide a user-friendly 
-  web interface for geographic data visualization with interactive elements and a dynamic legend for suitability scoring.
-  
-  Author: Dominic C
-
-  Additional Notes: This document links to external CSS for styling and JS scripts for functionality. Ensure all 
-  dependencies are correctly linked and accessible. Custom CSS and JS are located in the 'css' and 'js' folders, respectively.
-  Suitability files are created by custom Python files. Ensure the correct path to the suitability file is provided in the
-  'script.js' file.
--->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -24,6 +10,8 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
   <!-- Custom CSS -->
   <link rel="stylesheet" href="css/styles.css" />
+  <!-- Github Markdown-->
+  <link rel="stylesheet" href="css/github-markdown.css">
   <!-- Leaflet Legend CSS -->
   <link rel="stylesheet" href="src/leaflet.legend.css">
   <!-- Favicon -->
@@ -51,6 +39,9 @@
         <li><span style="background-color: hsl(120, 100%, 50%);"></span>10</li>
       </ul>
     </div>
+  </div>
+  <div id="customLegend" class="custom-legend">
+    <!-- Legend items will be added here dynamically -->
   </div>
   <div id="info-box" class="info-box">
     Suitability Score: <span id="score">-</span>
