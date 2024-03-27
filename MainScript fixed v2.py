@@ -257,8 +257,6 @@ class ParSuitApp:
                                                 relief='raised', borderwidth=2)
         self.process_completed_button.pack(ipadx=6, ipady=3)
 
-        threading.Thread(target=self.run_weighted_overlay).start()
-
         self.slider_values = self.get_slider_values()  # Store the slider values
         threading.Thread(target=self.run_weighted_overlay).start()
     

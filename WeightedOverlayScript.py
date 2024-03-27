@@ -13,13 +13,13 @@ import os
 
 
 # Set the base directory for input files
-input_base_dir = r"C:\Users\Dominic\Desktop\ParSuitAPRX"
+input_base_dir = r"C:\Users\cwalinskid\Desktop\ParSuitAPRX"
 
 # Set the output directory for the final GeoJSON file
-output_base_dir = r"C:\Users\Dominic\Desktop\ParSuit\data"
+output_base_dir = r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit\data"
 
 #Slider directory
-slider_dir = r"C:\Users\Dominic\Desktop\ParSuit"
+slider_dir = r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit"
 
 # Set environment settings
 arcpy.env.cellSize = 150
