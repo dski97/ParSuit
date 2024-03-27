@@ -95,9 +95,11 @@ function createTileLayer(url, attribution, minZoom = 10, maxZoom = 19, ext = 'pn
         ext
     }); // Return a tile layer with the given URL, attribution, minZoom, maxZoom, and ext
 }
-// Stadia Alidade Smooth tile layer is added to the map
-var Stadia_AlidadeSmooth = createTileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png',
-    '&copy; <a href="https://www.stadiamaps.com/" target="_blank">Stadia Maps</a> &copy; <a href="https://openmaptiles.org/" target="_blank">OpenMapTiles</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors');
+// ESRI Gray tile layer is added to the map
+var CartoDB_Positron = L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+	subdomains: 'abcd'
+});
 
 // OSM, Satellite, and Gray tile layers are created
 var osmLayer = createTileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
@@ -107,14 +109,14 @@ var osmLayer = createTileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.p
 var satelliteLayer = createTileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
     'Tiles &copy; Esri &mdash; Source: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community');
 
-//Stadia map open by default
-Stadia_AlidadeSmooth.addTo(map);
+//Esri map open by default
+CartoDB_Positron.addTo(map);
 
 // Base layers are created
 var baseLayers = {
     "OSM": osmLayer,
     "Satellite": satelliteLayer,
-    "Gray": Stadia_AlidadeSmooth
+    "Carto Color": CartoDB_Positron
 };
 
 // Geocoder control is added to the map
