@@ -53,6 +53,11 @@ class ParSuitApp:
     def __init__(self, root):
         self.root = root
         self.root.title("ParSuit")
+
+        icon_path = "icons/box.png"
+        icon_image = tk.PhotoImage(file=icon_path)
+        self.root.iconphoto(True, icon_image)
+
         self.sliders = []
         self.slider_values = []
         self.setup_ui()

@@ -267,7 +267,7 @@ var featureLayer = L.esri.featureLayer({
     color: "#000000", // Border color
     weight: 1, // Border weight
     opacity: 1, // Border opacity
-    fillColor: "gray", // Fill color
+    fillColor: false, // Fill color
     fillOpacity: 0, // Fill opacity
   }),
   onEachFeature: (feature, layer) => {
