@@ -9,6 +9,8 @@ import webbrowser
 from http.server import SimpleHTTPRequestHandler, HTTPServer
 
 # Configuration class to store the constants
+
+
 class Configuration:
     SLIDER_NAMES = [
         "Away from Brownfields",
@@ -136,7 +138,8 @@ class ParSuitApp:
         # Bind the scrollable frame to the canvas
         self.scrollable_frame.bind(
             "<Configure>",
-            lambda event: self.canvas.configure(scrollregion=self.canvas.bbox("all")),
+            lambda event: self.canvas.configure(
+                scrollregion=self.canvas.bbox("all")),
         )
 
         # Create the window id for the scrollable frame
@@ -221,7 +224,8 @@ class ParSuitApp:
         self.preset_combobox.pack(pady=(0, 20))
 
         # Bind the <<ComboboxSelected>> event to the on_preset_selected method
-        self.preset_combobox.bind("<<ComboboxSelected>>", self.on_preset_selected)
+        self.preset_combobox.bind(
+            "<<ComboboxSelected>>", self.on_preset_selected)
 
     # Method to create the importance key
     def create_importance_key(self):
@@ -323,7 +327,8 @@ class ParSuitApp:
     def create_total_label(self):
 
         # Create a font for the total label
-        total_label_font = Font(family="Times New Roman", size=16, weight="bold")
+        total_label_font = Font(
+            family="Times New Roman", size=16, weight="bold")
 
         # Create the total label with the initial text "Total: 0/100"
         self.total_label = tk.Label(
@@ -347,7 +352,8 @@ class ParSuitApp:
             glossary_frame, text="Glossary", font=glossary_title_font
         )
         glossary_title.pack(side="top")
-        term_font = Font(family="Arial", size=12, weight="bold", slant="italic")
+        term_font = Font(family="Arial", size=12,
+                         weight="bold", slant="italic")
 
         # Create a dictionary of glossary terms and their explanations
         glossary_terms = {
@@ -365,7 +371,8 @@ class ParSuitApp:
         }
 
         # Create a text widget for the glossary terms
-        glossary_text = tk.Text(glossary_frame, wrap=tk.WORD, width=70, height=20)
+        glossary_text = tk.Text(
+            glossary_frame, wrap=tk.WORD, width=70, height=20)
         glossary_scrollbar = tk.Scrollbar(
             glossary_frame, command=glossary_text.yview, width=22
         )
