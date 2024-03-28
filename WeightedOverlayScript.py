@@ -21,7 +21,7 @@ output_base_dir = r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit\data"
 slider_dir = r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit"
 
 # Set environment settings
-arcpy.env.cellSize = 150
+arcpy.env.cellSize = 100
 arcpy.env.scratchWorkspace = input_base_dir
 arcpy.env.overwriteOutput = True
 
