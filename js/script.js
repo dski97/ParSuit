@@ -86,6 +86,30 @@ function createPane(name, zIndex) {
 createPane('rasterPane', 450); // Create a pane for the raster layer
 createPane('parcelPane', 400); // Create a pane for the parcel layer
 
+// Custom control for adjusting the opacity of the suitability layer
+class OpacityControl extends L.Control {
+    constructor(layer, options = {}) {
+        super(options);
+        this.layer = layer;
+    }
+
+    onAdd(map) {
+        var container = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom opacity-control');
+        container.innerHTML = `
+            <label for="opacity-slider">Suitability Layer Opacity:</label>
+            <input id="opacity-slider" type="range" min="0" max="1" step="0.1" value="0.7">
+        `;
+        L.DomEvent.disableClickPropagation(container);
+
+        var opacitySlider = container.querySelector('#opacity-slider');
+        L.DomEvent.on(opacitySlider, 'input', (e) => {
+            this.layer.setStyle({ fillOpacity: parseFloat(e.target.value) });
+        });
+
+        return container;
+    }
+}
+
 // Function to create a tile layer
 function createTileLayer(url, attribution, minZoom = 10, maxZoom = 19, ext = 'png') { // Default values for minZoom, maxZoom, and ext
     return L.tileLayer(url, {
@@ -171,7 +195,7 @@ var overlayLayers = {};
 async function addRasterLayer() {
     const response = await fetch('data/RasterOverlay.geojson'); // Fetch the raster data
     const data = await response.json(); // Get the JSON data from the response
-    return L.geoJSON(data, { // Create a GeoJSON layer with the data
+    let rasterLayer = L.geoJSON(data, { // Create a GeoJSON layer with the data
         pane: 'rasterPane', // Add the layer to the 'rasterPane' pane
         style: feature => ({ // Style each feature based on its properties
             fillColor: getColor(feature.properties.gridcode), // Fill color based on the gridcode
@@ -184,6 +208,12 @@ async function addRasterLayer() {
             layer.on('mouseout', clearInfoBox); // Clear the info box on mouseout
         },
     }).addTo(map); // Add the layer to the map
+
+    map.addControl(new OpacityControl(rasterLayer, {
+        position: 'topright'
+    })); // Add the opacity control to the map
+
+    return rasterLayer; // Return the raster layer
 }
 
 // Feature layer is created

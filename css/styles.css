@@ -271,3 +271,17 @@
 .custom-legend .bold-term {
     font-weight: bold;
 }
+
+.opacity-control {
+    background-color: white;
+    padding: 10px;
+}
+
+.opacity-control label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.opacity-control input[type="range"] {
+    width: 100%;
+}
