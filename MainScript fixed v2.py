@@ -57,9 +57,6 @@ class ParSuitApp:
         self.center_window()
         self.start_server()
         self.is_browser_open = False
-        self.root.protocol(
-            "WM_DELETE_WINDOW", self.stop_server
-        )  # Stop the server when the window is closed
 
     # Method to set up the user interface
     def setup_ui(self):
@@ -531,17 +528,15 @@ class ParSuitApp:
         total = sum(slider.get() for slider in self.sliders)
         return total == 100
 
-    # Method to stop the server
     def stop_server(self):
-
-        # Shutdown the server
-        self.httpd.shutdown()
+        # Close the server socket immediately
+        self.httpd.server_close()
 
         # Join the server thread
         self.server_thread.join()
 
         # Quit and destroy the Tkinter application
-        self.root.quit() 
+        self.root.quit()
         self.root.destroy()
         print("Server stopped successfully")
 
