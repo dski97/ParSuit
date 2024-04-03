@@ -28,6 +28,11 @@ pip install -r requirements.txt
  ```
 3. Set up the necessary file paths and directories in the `WeightedOverlayScript.py` file.
 
+4. Download the APRX file from Google Drive:
+- Go to the following Google Drive link: [ParSuit APRX File](https://drive.google.com/file/d/your-aprx-file-id/view?usp=sharing)
+- Download the APRX file and place it in the appropriate directory referenced in the `WeightedOverlayScript.py` script.
+
+
 ## Usage
 
 1. Run the `ParSuitApp.py` script to launch the ParSuit application:
