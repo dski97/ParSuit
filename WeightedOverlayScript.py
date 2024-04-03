@@ -12,16 +12,16 @@ import os
 
 
 # Set the base directory for input files
-input_base_dir = r"C:\Users\cwalinskid\Desktop\ParSuitAPRX"
+input_base_dir = r"C:\Users\Dominic\Desktop\ParSuitAPRX"
 
 # Set the output directory for the final GeoJSON file
-output_base_dir = r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit\data"
+output_base_dir = r"C:\Users\Dominic\Desktop\ParSuit\data"
 
 # Slider directory
-slider_dir = r"C:\Users\cwalinskid\Desktop\CRCOG Project\ParSuit"
+slider_dir = r"C:\Users\Dominic\Desktop\ParSuit"
 
 # Set environment settings
-arcpy.env.cellSize = 100
+arcpy.env.cellSize = 200
 arcpy.env.scratchWorkspace = input_base_dir
 arcpy.env.overwriteOutput = True
 
@@ -41,7 +41,7 @@ inRaster11 = os.path.join(input_base_dir, "landuse.gdb", "landuse")
 # Remap values (unchanged)
 remapBrownfield = RemapValue([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [
                              7, 7], [8, 8], [9, 9], [10, 10], ["NODATA", "NODATA"]])
-remapBuildableSoil = RemapValue([[1, 3], [2, 4], [3, 5], [4, 5], [5, 5], [6, 6], [
+remapBuildableSoil = RemapValue([[1, 3], [2, 4], [3, 6], [4, 6], [5, 6], [6, 7], [
                                 7, 7], [8, 8], [9, 9], [10, 10], ["NODATA", "NODATA"]])
 remapFloodzones = RemapValue([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [
                              7, 7], [8, 8], [9, 9], [10, 10], ["NODATA", "NODATA"]])
@@ -57,7 +57,7 @@ remapSewerCon = RemapValue([[1, 1], [2, 1], [3, 1], [4, 1], [5, 5], [6, 6], [
                            7, 7], [8, 8], [9, 9], [10, 10], ["NODATA", "NODATA"]])
 remapSlope = RemapValue([[1, 1], [2, 1], [3, 1], [4, 3], [5, 3], [6, 5], [
                         7, 7], [8, 8], [9, 9], [10, 10], ["NODATA", "NODATA"]])
-remapWetlands = RemapValue([[1, 1], [2, 2], [3, 3], [4, 4], [5, 5], [6, 6], [
+remapWetlands = RemapValue([[1, 2], [2, 2], [3, 4], [4, 4], [5, 6], [6, 6], [
                            7, 7], [8, 8], [9, 9], [10, 10], ["NODATA", "NODATA"]])
 remapLanduse = RemapValue([
     [0, "NODATA"],

@@ -39,9 +39,9 @@ class Configuration:
     PRESET_VALUES = {
         "Balanced": [9] * 10 + [10],
         "Urban-Intensified": [3, 3, 3, 14, 14, 14, 8, 14, 3, 3, 21],
-        "Rural Favorite": [14, 14, 14, 3, 3, 3, 9, 3, 14, 14, 9],
+        "Rural Favorite": [38, 16, 6, 2, 2, 2, 2, 0, 30, 1, 1],
         "Community-Based": [3, 9, 3, 16, 16, 11, 16, 9, 3, 2, 12],
-        "Lone Star Ranger": [16, 12, 16, 3, 3, 3, 3, 3, 12, 16, 13],
+        "Lone Star Ranger": [50, 10, 2, 2, 2, 2, 2, 2, 22, 2, 4],
         "Reset": [0] * 11,
     }
     NUM_SLIDERS = len(SLIDER_NAMES)
