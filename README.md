@@ -19,15 +19,21 @@ ParSuit is a land suitability analysis application for the Hartford Capitol Regi
 ## Installation
 
 1. Clone the repository:
+ ```
 git clone https://github.com/your-username/ParSuit.git
+ ```
 2. Install the required Python packages:
+ ```
 pip install -r requirements.txt
+ ```
 3. Set up the necessary file paths and directories in the `WeightedOverlayScript.py` file.
 
 ## Usage
 
 1. Run the `ParSuitApp.py` script to launch the ParSuit application:
+ ```
 python ParSuitApp.py
+ ```
 2. Adjust the sliders based on your preferences or select a preset scenario.
 
 3. Click the "Process Weighted Overlay" button to generate the suitability map.
