@@ -44,7 +44,7 @@ python ParSuitApp.py
 
 ## Folder Structure
 
-- `ParSuitApp.py`: The main Python script for the ParSuit application.
+- `ParSuitBrowser.py`: The main Python script for the ParSuit application.
 - `WeightedOverlayScript.py`: The Python script for performing the weighted overlay analysis using ArcGIS.
 - `script.js`: The JavaScript code for the web viewer.
 - `data/`: Directory containing the generated GeoJSON files.
