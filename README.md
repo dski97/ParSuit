@@ -2,6 +2,12 @@
 
 ParSuit is a land suitability analysis application for the Hartford Capitol Region. It empowers users to prioritize geographic and environmental factors using simple slider adjustments to identify the most suitable parcels for their projects.
 
+## Demo Video
+
+Click the image below to watch the demo video:
+
+[![ParSuit Demo](https://img.youtube.com/vi/11UipdGlYFDdVKmQU1bRMaGJC70mI3WQa/0.jpg)](https://drive.google.com/file/d/11UipdGlYFDdVKmQU1bRMaGJC70mI3WQa/view?usp=sharing)
+
 ## Features
 
 - User-friendly interface with slider adjustments for various geographic and environmental factors
@@ -29,7 +35,7 @@ pip install -r requirements.txt
 3. Set up the necessary file paths and directories in the `WeightedOverlayScript.py` file.
 
 4. Download the APRX file from Google Drive:
-- Go to the following Google Drive link: [ParSuit APRX File](https://drive.google.com/file/d/1BZ5LIv6qzmMs1yjP9h9SalJChMEJVr-Z/view?usp=drive_link)
+- Go to the following Google Drive link: [ParSuit APRX File](https://drive.google.com/file/d/1Yl4ZrwjioPQ1v-frhyUHboVpYYmMrPD-/view?usp=sharing)
 - Download the APRX file and place it in the appropriate directory referenced in the `WeightedOverlayScript.py` script.
 
 
