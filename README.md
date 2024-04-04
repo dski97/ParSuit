@@ -6,7 +6,7 @@ ParSuit is a land suitability analysis application for the Hartford Capitol Regi
 
 Click the LINK below to watch the demo video:
 
-[![ParSuit Demo](https://drive.google.com/file/d/11UipdGlYFDdVKmQU1bRMaGJC70mI3WQa/view?usp=sharing)
+![ParSuit Demo](https://drive.google.com/file/d/11UipdGlYFDdVKmQU1bRMaGJC70mI3WQa/view?usp=sharing)
 
 ## Features
 
